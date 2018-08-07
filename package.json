@@ -1,0 +1,27 @@
+{
+  "name": "youtube-music",
+  "version": "1.0.0",
+  "description": "Electron based (wrapper) application for YouTube Music",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simon-fraser/YouTube-Music-Desktop.git"
+  },
+  "author": "Simon Fraser",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^2.0.6"
+  },
+  "scripts": {
+    "start": "electron index.js",
+    "build": "electron-packager . 'YouTube Music' --out=build --icon=assets/youtube-music.ico"
+  },
+  "keywords": [
+    "youtube",
+    "music",
+    "media",
+    "player",
+    "desktop",
+    "electron"
+  ]
+}
