@@ -4,7 +4,8 @@ This is an unofficial YouTube Music Desktop app, with some additions that I feel
 
 ### Technical
 
-Built using [ElectronJS](https://electronjs.org/).
+Built using [ElectronJS](https://electronjs.org/).<br>
+Tested & built on OSX (10.13.6)
 
 ---
 

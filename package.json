@@ -14,7 +14,8 @@
   },
   "scripts": {
     "start": "electron index.js",
-    "build": "electron-packager . 'YouTube Music' --out=build --icon=assets/youtube-music.ico"
+    "build": "electron-packager . 'YouTube Music' --out=build --icon=assets/youtube-music.ico",
+    "release": "electron-packager . 'YouTube Music' --out=release --platform=darwin,linux,win32 --icon=assets/youtube-music.ico"
   },
   "keywords": [
     "youtube",
