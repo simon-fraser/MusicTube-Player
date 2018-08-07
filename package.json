@@ -1,6 +1,6 @@
 {
   "name": "youtube-music",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Electron based (wrapper) application for YouTube Music",
   "main": "index.js",
   "repository": {
@@ -23,5 +23,8 @@
     "player",
     "desktop",
     "electron"
-  ]
+  ],
+  "dependencies": {
+    "node-notifier": "^5.2.1"
+  }
 }
