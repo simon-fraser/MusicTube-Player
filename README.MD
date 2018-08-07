@@ -24,3 +24,7 @@ No Pre-Compiled build yet, however compiles to your local enviornment and more u
 Open to suggestions.
 
 [X] Notifications on track change,play/pause
+
+### Screenshots
+
+![Opening Screenshot](assets/pics/start-screenshot.png)
