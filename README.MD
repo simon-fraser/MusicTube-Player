@@ -21,4 +21,6 @@ No Pre-Compiled build yet, however compiles to your local enviornment and more u
 
 ## Todo
 
-[ ] Notifications on track change,play/pause
+Open to suggestions.
+
+[X] Notifications on track change,play/pause
