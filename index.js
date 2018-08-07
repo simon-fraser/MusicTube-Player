@@ -25,8 +25,7 @@ ipcMain.on('notify', function(event, obj) {
 	notifier.notify({
 		title: `${obj.status} • YouTube Music`,
 		message: `${obj.title}\n${obj.by}`,
-		icon: path.join(__dirname, 'assets/youtube-music.ico'),
-		contentImage: null
+		icon: path.join(__dirname, 'assets/youtube-music.ico')
 	})
 });
 
