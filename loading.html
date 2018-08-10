@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="index.css">
+	<style>
+		@keyframes pulse_animation {
+			0% { transform: scale(1); }
+			40% { transform: scale(1.15); }
+			100% { transform: scale(1); }
+		}
+		.loader {
+			align-items: center;
+			display: flex;
+			flex-direction: column;
+			height: 100vh;
+			justify-content: center;
+			width: 100%;
+		}
+		.im-loading {
+			animation-delay: 500ms;
+			animation-duration: 1100ms;
+			animation-iteration-count: infinite;
+			animation-name: pulse_animation;
+			animation-timing-function: linear;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="loader">
+		<img src="assets/youtube-music.svg" width="220" class="im-loading" alt="YouTube Music">
+	</div>
+
+</body>
+</html>

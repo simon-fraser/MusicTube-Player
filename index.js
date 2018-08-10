@@ -1,31 +1,124 @@
-const { app, BrowserWindow, globalShortcut, ipcMain } = require('electron');
+const { app, BrowserWindow, globalShortcut, Menu, ipcMain } = require('electron');
 const notifier = require('node-notifier');
 const path = require('path');
 
-let mainWindow;
+const pjson = require('./package.json');
+const axios = require('axios');
 
-app.on('ready', () => {
-	// Build Main Window
-	mainWindow = new BrowserWindow({
+let mainWindow,
+	loadingScreen,
+	aboutScreen,
+	releaseData,
+	windowParams = {
+		backgroundColor: '#131313',
+		title: 'YouTube Music Desktop',
 		frame: true,
-		icon: path.join(__dirname, 'assets/youtube-music.ico'),
-		titleBarStyle: 'hidden-inset',
 		height: 700,
+		icon: path.join(__dirname, 'assets/youtube-music.ico'),
 		width: 500,
-	})
+	}
+
+function createWindow() {
+	// Create the browser window.
+	mainWindow = new BrowserWindow(Object.assign(windowParams, { show: false }));
+
 	// Load YouTube
-	mainWindow.loadURL('https://music.youtube.com/')
+	mainWindow.loadURL(`https://music.youtube.com/`);
+
+	// Default hide the mainWindow
+	mainWindow.hide();
+
+	// After mainWindow has loaded, hide loading & show main window again
+	mainWindow.webContents.on('did-finish-load', () => {
+		mainWindow.show();
+		loadingScreen.close();
+	});
+
+	// Open the DevTools.
+    // mainWindow.webContents.openDevTools({mode: 'detach'});
+
+    // Emitted when the window is closed.
+    mainWindow.on('closed', function() {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        mainWindow = null;
+	});
+}
+
+function createLoadingWindow() {
+	// Create the browser window.
+	loadingScreen = new BrowserWindow(Object.assign(windowParams, { parent: mainWindow }));
+	// Load loading screen
+	loadingScreen.loadURL('file://' + __dirname + '/loading.html');
+	// if closed set loading
+	loadingScreen.on('closed', () => { loadingScreen = null });
+	// Show screen
+    loadingScreen.webContents.on('did-finish-load', () => {
+        loadingScreen.show();
+	});
+}
+
+function createAboutWindow() {
+	// Create the browser window.
+	aboutScreen = new BrowserWindow({
+		backgroundColor: '#131313',
+		frame: true,
+		height: 300,
+		icon: path.join(__dirname, 'assets/youtube-music.ico'),
+		width: 300,
+	});
+
+	// Load the about screen
+	aboutScreen.loadURL('file://' + __dirname + '/about.html');
+
+	// Print version
+	aboutScreen.webContents.executeJavaScript(`document.querySelector('.js-version').textContent='v${pjson.version}';`);
+
+	if(`v${pjson.version}` !== releaseData.tag_name) {
+		// aboutScreen.webContents.executeJavaScript(`
+		// 	var updateLink = document.createElement('a');
+		// 	updateLink.src = releaseData.html_url;
+		// 	var updateText = document.createTextNode('Download Update');
+		// 	document.querySelector('.js-update').appendChild(updateLink);
+		// `);
+		aboutScreen.webContents.executeJavaScript(`document.querySelector('.js-update').textContent='Download Update'`);
+	} else {
+		aboutScreen.webContents.executeJavaScript(`document.querySelector('.js-update').textContent='Up to date'`);
+	}
+
+	// aboutScreen.webContents.openDevTools({mode: 'detach'});
+}
+
+function releaseDetails() {
+	// fetch release info from github
+	return axios.get('https://api.github.com/repos/simon-fraser/YouTube-Music-Desktop/releases')
+	.then(result => { return result.data })
+	.catch(error => { return Promise.reject(error) })
+}
+
+// Application ready to run
+app.on('ready', () => {
+	// Create Windows
+	createLoadingWindow();
+	createWindow();
+
+	// get release details data
+	releaseDetails().then(release => {
+		releaseData = release[0];
+	});
 
 	// Setup Media Keys
-	registerGlobalShortcuts()
+	registerGlobalShortcuts();
+	createMenu();
 });
 
 ipcMain.on('notify', function(event, obj) {
 	// Notify
 	notifier.notify({
-		title: `${obj.status} • YouTube Music`,
+		title: `${obj.status} • YouTube Music Desktop`,
 		message: `${obj.title}\n${obj.by}`,
-		icon: path.join(__dirname, 'assets/youtube-music.ico')
+		icon: path.join(__dirname, 'assets/youtube-music.ico'),
 	})
 });
 
@@ -85,3 +178,28 @@ function registerGlobalShortcuts() {
 		}, 500)
 	})
 }
+
+function createMenu() {
+	const topLevelItems = [
+	  {
+		label: 'Application',
+		submenu: [
+			{
+				label: 'About YouTube Music Desktop',
+				click() {
+					createAboutWindow();
+				}
+			},
+			{
+				label: 'Quit',
+				accelerator: 'CmdOrCtrl+Q',
+				click() {
+					app.quit();
+				}
+			}
+		]
+	  }
+	];
+
+	Menu.setApplicationMenu(Menu.buildFromTemplate(topLevelItems));
+  }

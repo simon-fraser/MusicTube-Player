@@ -1,6 +1,6 @@
 {
   "name": "youtube-music",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Electron based (wrapper) application for YouTube Music",
   "main": "index.js",
   "repository": {
@@ -14,8 +14,8 @@
   },
   "scripts": {
     "start": "electron index.js",
-    "build": "electron-packager . 'YouTube Music' --out=build --icon=assets/youtube-music.ico",
-    "release": "electron-packager . 'YouTube Music' --out=release --platform=darwin,linux,win32 --icon=assets/youtube-music.ico"
+    "build": "rm -rf build && electron-packager . 'YouTube Music Desktop' --out=build --icon=assets/youtube-music.ico",
+    "release": "rm -rf build && electron-packager . 'YouTube Music Desktop' --out=release --platform=darwin,linux,win32 --icon=assets/youtube-music.ico"
   },
   "keywords": [
     "youtube",
@@ -26,6 +26,7 @@
     "electron"
   ],
   "dependencies": {
+    "axios": "^0.18.0",
     "node-notifier": "^5.2.1"
   }
 }
