@@ -26,7 +26,7 @@
 		const { remote } = require('electron');
 		const { app } = remote;
 		document.addEventListener('DOMContentLoaded', function() {
-			document.querySelector('.js-version').textContent = `v${app.getVersion()}`
+			document.querySelector('.js-version').textContent = `${app.getVersion()}`
 		})
 	</script>
 </head>
