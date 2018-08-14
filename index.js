@@ -83,16 +83,21 @@ ipcMain.on('notify', function(event, obj) {
 });
 
 function selfUpdate() {
-
 	const updater = new GhReleases(updateOptions);
+
+	// Debug Code
+	updater._getLatestTag().then(latest => {
+		console.log(`Current: ${updater._getCurrentVersion()} • Latest: ${latest}`)
+	})
+
 	updater.check((err, status) => {
-		console.log(status)
+		console.log('Will update:', status)
 		if (!err && status) {
 			// Download the update
 			updater.download()
 		}
 	})
-	updater.on('update-downloaded', (info) => {
+	updater.on('update-downloaded', info => {
 		updater.install()
 	})
 }
