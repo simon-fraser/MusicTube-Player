@@ -10,39 +10,38 @@
 			font-size: 12px;
 		}
 		.about-head {
-			width: 100%;
-			padding: 20px 10px 0;
+			align-items: center;
 			display: flex;
 			flex-direction: column;
-			align-items: center;
-			justify-content: center
+			justify-content: center;
+			padding: 20px 10px 0;
+			width: 100%;
 		}
 		.about-content {
 			padding: 0 20px;
 			text-align: center;
 		}
 	</style>
+	<script>
+		const { remote } = require('electron');
+		const { app } = remote;
+		document.addEventListener('DOMContentLoaded', function() {
+			document.querySelector('.js-version').textContent = `v${app.getVersion()}`
+		})
+	</script>
 </head>
 <body>
-
 	<div class="about-head">
-		<img src="assets/youtube-music.svg" width="80" alt="YouTube Music">
+		<img src="assets/youtube-music.svg" width="100" alt="YouTube Music">
 		<h2>YouTube Music Desktop</h2>
 	</div>
 	<div class="about-content">
-		<p>
-			<u class="js-version">vx.x.x</u>
-			<br>
-			<span class="js-update"></span>
-		</p>
-
+		<p><u class="js-version">vx.x.x</u></p>
 		<p>By Simon Fraser <br><br>
 			(<a href="https://simonf.co.uk">https://simonf.co.uk</a>)<br>
 			(<a href="https://github.com/simon-fraser/YouTube-Music-Desktop">https://github.com/simon-fraser/YouTube-Music-Desktop</a>)
 		</p>
-
 		<p>YouTube, YouTube Music and all logos are trademarks of YouTube, LLC.</p>
 	</div>
-
 </body>
 </html>

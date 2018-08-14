@@ -346,7 +346,14 @@
   a {
 	color: #fff;
   }
+
   a:hover {
-	  color: #fff;
-	  text-decoration: underline;
+  color: #fff;
+  text-decoration: underline;
+  }
+
+  @keyframes pulse_animation {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.15); }
+    100% { transform: scale(1); }
   }

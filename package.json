@@ -1,33 +1,33 @@
 {
-  "name": "youtube-music",
-  "version": "1.2.1",
-  "description": "Electron based (wrapper) application for YouTube Music",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/simon-fraser/YouTube-Music-Desktop.git"
-  },
-  "author": "Simon Fraser",
-  "license": "ISC",
-  "devDependencies": {
-    "electron": "^2.0.6"
-  },
-  "scripts": {
-    "start": "electron index.js",
-    "build": "rm -rf build && electron-packager . 'YouTube Music Desktop' --out=build --icon=assets/youtube-music.ico",
-    "release": "rm -rf build && electron-packager . 'YouTube Music Desktop' --out=release --platform=darwin,linux,win32 --icon=assets/youtube-music.ico"
-  },
-  "keywords": [
-    "youtube",
-    "music",
-    "media",
-    "player",
-    "desktop",
-    "electron"
-  ],
-  "dependencies": {
-    "axios": "^0.18.0",
-    "electron-gh-releases": "^2.0.4",
-    "node-notifier": "^5.2.1"
-  }
+	"name": "youtube-music",
+	"version": "v1.2.1",
+	"description": "Electron based (wrapper) application for YouTube Music",
+	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/simon-fraser/YouTube-Music-Desktop.git"
+	},
+	"author": "Simon Fraser",
+	"license": "ISC",
+	"devDependencies": {
+		"electron": "^2.0.7"
+	},
+	"scripts": {
+		"start": "electron .",
+		"build": "rm -rf build && electron-packager . 'YouTube Music Desktop' --out=build --icon=assets/youtube-music.ico",
+		"release": "rm -rf build && electron-packager . 'YouTube Music Desktop' --out=release --platform=darwin,linux,win32 --icon=assets/youtube-music.ico"
+	},
+	"keywords": [
+		"youtube",
+		"music",
+		"media",
+		"player",
+		"desktop",
+		"electron"
+	],
+	"dependencies": {
+		"electron-debug": "^2.0.0",
+		"electron-gh-releases": "^2.0.4",
+		"node-notifier": "^5.2.1"
+	}
 }

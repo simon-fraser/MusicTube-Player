@@ -1,10 +1,19 @@
 const { app, BrowserWindow, globalShortcut, Menu, ipcMain } = require('electron');
+const GhReleases = require('electron-gh-releases');
 const notifier = require('node-notifier');
 const path = require('path');
 
+// For heavy debugging
+// require('electron-debug')();
+
+// Vars
 let mainWindow,
 	loadingScreen,
 	aboutScreen,
+	updateOptions = {
+		repo: 'simon-fraser/YouTube-Music-Desktop',
+		currentVersion: app.getVersion()
+	},
 	windowParams = {
 		backgroundColor: '#131313',
 		title: 'YouTube Music Desktop',
@@ -12,7 +21,7 @@ let mainWindow,
 		height: 700,
 		icon: path.join(__dirname, 'assets/youtube-music.ico'),
 		width: 500
-	}
+	};
 
 function createLoadingWindow() {
 
@@ -33,7 +42,7 @@ function createWindow() {
 
 	mainWindow.webContents.on('did-finish-load', () => {
 		mainWindow.show();
-		loadingScreen.close();
+		if(loadingScreen !== null) loadingScreen.close();
 	});
 
 	// Emitted when the window is closed.
@@ -44,6 +53,7 @@ function createAboutWindow() {
 
 	aboutScreen = new BrowserWindow({
 		backgroundColor: '#131313',
+		title: 'YouTube Music Desktop',
 		frame: true,
 		height: 400,
 		icon: path.join(__dirname, 'assets/youtube-music.ico'),
@@ -59,9 +69,10 @@ app.on('ready', () => {
 	createWindow();
 	globalShortcuts();
 	createMenu();
+	selfUpdate();
 })
 
-//
+// Notification message process
 ipcMain.on('notify', function(event, obj) {
 
 	notifier.notify({
@@ -71,7 +82,20 @@ ipcMain.on('notify', function(event, obj) {
 	})
 });
 
+function selfUpdate() {
 
+	const updater = new GhReleases(updateOptions);
+	updater.check((err, status) => {
+		console.log(status)
+		if (!err && status) {
+			// Download the update
+			updater.download()
+		}
+	})
+	updater.on('update-downloaded', (info) => {
+		updater.install()
+	})
+}
 
 function globalShortcuts() {
 
@@ -141,18 +165,21 @@ function createMenu() {
 						}
 					},
 					{
+						label: 'Reload',
+						accelerator: 'Cmd+R',
+						role: 'forceReload'
+					},
+					{
 						label: 'Check for Update',
+						accelerator: 'CmdOrCtrl+Shift+U',
 						click() {
-
+							selfUpdate();
 						}
 					},
 					{
 						label: 'Show Developer Tools',
 						accelerator: 'CmdOrCtrl+Shift+I',
-						click() {
-							// Dev Tools
-							mainWindow.webContents.openDevTools({ mode: 'detach' });
-						}
+						role: 'toggleDevTools'
 					},
 					{
 						label: 'Quit',
