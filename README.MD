@@ -27,9 +27,8 @@ Issues can be logged on GitHub here. https://github.com/simon-fraser/YouTube-Mus
 ## Todo
 
 - [X] Notifications on track change,play/pause.
-- [ ] Better Notifications, when clicking inside the app as well (Check if I can monitor for attribute/element changes)
 - [X] About Page
-- [ ] Update link (Not fussed about auto-update currently)
+- [ ] Update <https://github.com/jenslind/electron-gh-releases>
 - [ ] Releases for other operating systems.
 
 ---

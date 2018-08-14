@@ -1,6 +1,6 @@
 {
   "name": "youtube-music",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Electron based (wrapper) application for YouTube Music",
   "main": "index.js",
   "repository": {
@@ -27,6 +27,7 @@
   ],
   "dependencies": {
     "axios": "^0.18.0",
+    "electron-gh-releases": "^2.0.4",
     "node-notifier": "^5.2.1"
   }
 }
