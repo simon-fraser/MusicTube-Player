@@ -7,7 +7,9 @@ const path = require('path');
 // require('electron-debug')();
 
 // Vars
-let mainWindow,
+let winWidth = 440,
+	winHeight = 620,
+	mainWindow,
 	loadingScreen,
 	aboutScreen,
 	updateOptions = {
@@ -16,11 +18,10 @@ let mainWindow,
 	},
 	windowParams = {
 		backgroundColor: '#131313',
-		title: 'YouTube Music Desktop',
-		frame: true,
-		height: 700,
 		icon: path.join(__dirname, 'assets/youtube-music.ico'),
-		width: 500
+		title: 'YouTube Music Desktop',
+		height: winHeight,
+		width: winWidth
 	};
 
 function createLoadingWindow() {
@@ -65,6 +66,15 @@ function createAboutWindow() {
 // Application ready to run
 app.on('ready', () => {
 
+	// Window position calculation, needs to be ran inside app ready
+	const { screen } = require('electron');
+    const display = screen.getPrimaryDisplay().workArea;
+    if(display.width) {
+		windowParams.x = (display.width - winWidth)
+		windowParams.y = (((display.height + display.y) / 2) - (winHeight / 2))
+	}
+
+	// Run
 	createLoadingWindow();
 	createWindow();
 	globalShortcuts();
