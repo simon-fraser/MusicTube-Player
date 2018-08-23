@@ -1,5 +1,4 @@
 const { app, BrowserWindow, globalShortcut, Menu, ipcMain } = require('electron');
-const GhReleases = require('electron-gh-releases');
 const notifier = require('node-notifier');
 const path = require('path');
 
