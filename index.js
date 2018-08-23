@@ -12,10 +12,6 @@ let winWidth = 440,
 	mainWindow,
 	loadingScreen,
 	aboutScreen,
-	updateOptions = {
-		repo: 'simon-fraser/YouTube-Music-Desktop',
-		currentVersion: app.getVersion()
-	},
 	windowParams = {
 		backgroundColor: '#131313',
 		icon: path.join(__dirname, 'assets/youtube-music.ico'),
@@ -70,8 +66,8 @@ app.on('ready', () => {
 	const { screen } = require('electron');
     const display = screen.getPrimaryDisplay().workArea;
     if(display.width) {
-		windowParams.x = (display.width - winWidth)
-		windowParams.y = (((display.height + display.y) / 2) - (winHeight / 2))
+		windowParams.x = (display.width - winWidth) // to the right
+		windowParams.y = (((display.height + display.y) / 2) - (winHeight / 2)) // vertical center
 	}
 
 	// Run
@@ -79,7 +75,6 @@ app.on('ready', () => {
 	createWindow();
 	globalShortcuts();
 	createMenu();
-	selfUpdate();
 })
 
 // Notification message process
@@ -90,27 +85,7 @@ ipcMain.on('notify', function(event, obj) {
 		message: `${obj.title}\n${obj.by}`,
 		icon: path.join(__dirname, 'assets/youtube-music.ico'),
 	})
-});
-
-function selfUpdate() {
-	const updater = new GhReleases(updateOptions);
-
-	// Debug Code
-	// updater._getLatestTag().then(latest => {
-	// 	console.log(`Current: ${updater._getCurrentVersion()} • Latest: ${latest}`)
-	// })
-
-	updater.check((err, status) => {
-		console.log('Will update:', status)
-		if (!err && status) {
-			// Download the update
-			updater.download()
-		}
-	})
-	updater.on('update-downloaded', info => {
-		updater.install()
-	})
-}
+})
 
 function globalShortcuts() {
 
@@ -183,13 +158,6 @@ function createMenu() {
 						label: 'Reload',
 						accelerator: 'Cmd+R',
 						role: 'forceReload'
-					},
-					{
-						label: 'Check for Update',
-						accelerator: 'CmdOrCtrl+Shift+U',
-						click() {
-							selfUpdate();
-						}
 					},
 					{
 						label: 'Show Developer Tools',

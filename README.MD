@@ -28,7 +28,7 @@ Issues can be logged on GitHub here. https://github.com/simon-fraser/YouTube-Mus
 
 - [X] Notifications on track change,play/pause.
 - [X] About Page
-- [ ] Update <https://github.com/jenslind/electron-gh-releases>
+- [ ] ~~Update <https://github.com/jenslind/electron-gh-releases>~~
 - [ ] Releases for other operating systems.
 
 ---
