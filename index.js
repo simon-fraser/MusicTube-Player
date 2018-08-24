@@ -20,7 +20,6 @@ let winWidth = 440,
 	};
 
 function createLoadingWindow() {
-
 	loadingScreen = new BrowserWindow(Object.assign(windowParams, { parent: mainWindow }));
 	loadingScreen.loadURL('file://' + __dirname + '/loading.html');
 	loadingScreen.on('closed', () => { loadingScreen = null });
@@ -31,7 +30,6 @@ function createLoadingWindow() {
 }
 
 function createWindow() {
-
 	mainWindow = new BrowserWindow(Object.assign(windowParams, { show: false }));
 	mainWindow.loadURL(`https://music.youtube.com/`);
 	mainWindow.hide();
@@ -46,7 +44,6 @@ function createWindow() {
 }
 
 function createAboutWindow() {
-
 	aboutScreen = new BrowserWindow({
 		backgroundColor: '#131313',
 		title: 'YouTube Music Desktop',
@@ -65,15 +62,17 @@ app.on('ready', () => {
 	const { screen } = require('electron');
     const display = screen.getPrimaryDisplay().workArea;
     if(display.width) {
-		windowParams.x = (display.width - winWidth) // to the right
-		windowParams.y = (((display.height + display.y) / 2) - (winHeight / 2)) // vertical center
+		windowParams.x = Math.round(display.width - winWidth) // to the right
+		windowParams.y = Math.round(((display.height + display.y) / 2) - (winHeight / 2)) // vertical center
 	}
 
+	console.log(windowParams)
+
 	// Run
-	createLoadingWindow();
-	createWindow();
-	globalShortcuts();
-	createMenu();
+	createLoadingWindow()
+	createWindow()
+	globalShortcuts()
+	createMenu()
 })
 
 // Notification message process
@@ -139,7 +138,6 @@ function globalShortcuts() {
 }
 
 function createMenu() {
-
 	Menu.setApplicationMenu(
 		Menu.buildFromTemplate(
 			[
