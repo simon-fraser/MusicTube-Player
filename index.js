@@ -8,8 +8,8 @@ const path = require('path');
 // Vars
 let winWidth = 440,
 	winHeight = 620,
-	mainWindow,
 	loadingScreen,
+	mainWindow,
 	aboutScreen,
 	windowParams = {
 		backgroundColor: '#131313',
@@ -17,42 +17,41 @@ let winWidth = 440,
 		title: 'YouTube Music Desktop',
 		height: winHeight,
 		width: winWidth
-	};
+	}
 
 function createLoadingWindow() {
-	loadingScreen = new BrowserWindow(Object.assign(windowParams, { parent: mainWindow }));
-	loadingScreen.loadURL('file://' + __dirname + '/loading.html');
-	loadingScreen.on('closed', () => { loadingScreen = null });
-
+	loadingScreen = new BrowserWindow(Object.assign(windowParams, { parent: mainWindow }))
+	loadingScreen.loadURL('file://' + __dirname + '/loading.html')
+	loadingScreen.on('closed', () => { loadingScreen = null })
+	// Show loader
 	loadingScreen.webContents.on('did-finish-load', () => {
-		loadingScreen.show();
-	});
+		loadingScreen.show()
+	})
 }
 
 function createWindow() {
-	mainWindow = new BrowserWindow(Object.assign(windowParams, { show: false }));
-	mainWindow.loadURL(`https://music.youtube.com/`);
-	mainWindow.hide();
-
+	mainWindow = new BrowserWindow(Object.assign(windowParams, { show: false }))
+	mainWindow.loadURL(`https://music.youtube.com/`)
+	mainWindow.hide()
+	// Show main window and hide loader
 	mainWindow.webContents.on('did-finish-load', () => {
-		mainWindow.show();
-		if(loadingScreen !== null) loadingScreen.close();
-	});
-
+		mainWindow.show()
+		if(loadingScreen !== null) loadingScreen.close()
+	})
 	// Emitted when the window is closed.
-	mainWindow.on('closed', function() { mainWindow = null });
+	mainWindow.on('closed', function() { mainWindow = null })
 }
 
 function createAboutWindow() {
 	aboutScreen = new BrowserWindow({
 		backgroundColor: '#131313',
-		title: 'YouTube Music Desktop',
 		frame: true,
-		height: 400,
 		icon: path.join(__dirname, 'assets/youtube-music.ico'),
-		width: 320,
-	});
-	aboutScreen.loadURL('file://' + __dirname + '/about.html');
+		title: 'YouTube Music Desktop',
+		height: 400,
+		width: 320
+	})
+	aboutScreen.loadURL('file://' + __dirname + '/about.html')
 }
 
 // Application ready to run
@@ -60,33 +59,30 @@ app.on('ready', () => {
 
 	// Window position calculation, needs to be ran inside app ready
 	const { screen } = require('electron');
-    const display = screen.getPrimaryDisplay().workArea;
+    const display = screen.getPrimaryDisplay().workArea
     if(display.width) {
 		windowParams.x = Math.round(display.width - winWidth) // to the right
 		windowParams.y = Math.round(((display.height + display.y) / 2) - (winHeight / 2)) // vertical center
 	}
-
-	console.log(windowParams)
 
 	// Run
 	createLoadingWindow()
 	createWindow()
 	globalShortcuts()
 	createMenu()
+	skipOverAdverts()
 })
 
 // Notification message process
 ipcMain.on('notify', function(event, obj) {
-
 	notifier.notify({
 		title: `${obj.status} • YouTube Music Desktop`,
 		message: `${obj.title}\n${obj.by}`,
-		icon: path.join(__dirname, 'assets/youtube-music.ico'),
+		icon: path.join(__dirname, 'assets/youtube-music.ico')
 	})
 })
 
 function globalShortcuts() {
-
 	// Play,Pause
 	globalShortcut.register('MediaPlayPause', () => {
 		mainWindow.webContents.executeJavaScript(`document.getElementsByClassName('play-pause-button')[0].click()`)
@@ -103,7 +99,6 @@ function globalShortcuts() {
 			`)
 		}, 500)
 	})
-
 	// Next
 	globalShortcut.register('MediaNextTrack', () => {
 		mainWindow.webContents.executeJavaScript(`document.getElementsByClassName('next-button')[0].click()`)
@@ -119,7 +114,6 @@ function globalShortcuts() {
 			`)
 		}, 500)
 	})
-
 	// Previous
 	globalShortcut.register('MediaPreviousTrack', () => {
 		mainWindow.webContents.executeJavaScript(`document.getElementsByClassName('previous-button')[0].click()`)
@@ -137,40 +131,45 @@ function globalShortcuts() {
 	})
 }
 
+function skipOverAdverts() {
+	setInterval(() => {
+		mainWindow.webContents.executeJavaScript(`
+			var skip = document.getElementsByClassName('videoAdUiSkipButton')[0];
+			if(typeof skip !== "undefined") { skip.click() }
+		`)
+	}, 500)
+}
+
 function createMenu() {
-	Menu.setApplicationMenu(
-		Menu.buildFromTemplate(
-			[
-				{
-				  label: 'Application',
-				  submenu: [
-					{
-						label: 'About',
-						accelerator: 'CmdOrCtrl+I',
-						click() {
-							createAboutWindow();
-						}
-					},
-					{
-						label: 'Reload',
-						accelerator: 'Cmd+R',
-						role: 'forceReload'
-					},
-					{
-						label: 'Show Developer Tools',
-						accelerator: 'CmdOrCtrl+Shift+I',
-						role: 'toggleDevTools'
-					},
-					{
-						label: 'Quit',
-						accelerator: 'CmdOrCtrl+Q',
-						click() {
-							app.quit();
-						}
-					}
-				  ]
+	Menu.setApplicationMenu(Menu.buildFromTemplate(
+		[{
+			label: 'Application',
+			submenu: [
+			{
+				label: 'About',
+				accelerator: 'CmdOrCtrl+I',
+				click() {
+					createAboutWindow()
 				}
+			},
+			{
+				label: 'Reload',
+				accelerator: 'Cmd+R',
+				role: 'forceReload'
+			},
+			{
+				label: 'Show Developer Tools',
+				accelerator: 'CmdOrCtrl+Shift+I',
+				role: 'toggleDevTools'
+			},
+			{
+				label: 'Quit',
+				accelerator: 'CmdOrCtrl+Q',
+				click() {
+					app.quit()
+				}
+			}
 			]
-		)
-	)
+		}]
+	))
 }

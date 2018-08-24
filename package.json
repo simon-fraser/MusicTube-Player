@@ -1,6 +1,6 @@
 {
 	"name": "youtube-music",
-	"version": "v1.2.2",
+	"version": "v1.3.0",
 	"description": "Electron based (wrapper) application for YouTube Music",
 	"main": "index.js",
 	"repository": {
