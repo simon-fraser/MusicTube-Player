@@ -1,4 +1,10 @@
+![Version](https://img.shields.io/badge/Version-1.4.0-brightgreen.svg?style=for-the-badge)
+
+![Release](https://img.shields.io/github/release-date/simon-fraser/MusicTube-Player.svg?style=for-the-badge)
+![GitHub release](https://img.shields.io/github/release/simon-fraser/MusicTube-Player/all.svg?style=for-the-badge)
+
 # MusicTube Player
+![Icon](assets/musictube-readme.png)
 
 MusicTube is an unofficial YouTube Music Desktop app, with some additions that I feel necessary, notably media keys and system notifications.
 
