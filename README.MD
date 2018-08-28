@@ -1,4 +1,4 @@
-# MusicTube Desktop
+# MusicTube Player
 
 MusicTube is an unofficial YouTube Music Desktop app, with some additions that I feel necessary, notably media keys and system notifications.
 
