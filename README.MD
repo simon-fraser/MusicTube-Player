@@ -1,5 +1,3 @@
-![Version](https://img.shields.io/badge/Version-1.4.0-brightgreen.svg?style=for-the-badge)
-
 ![Release](https://img.shields.io/github/release-date/simon-fraser/MusicTube-Player.svg?style=for-the-badge)
 ![GitHub release](https://img.shields.io/github/release/simon-fraser/MusicTube-Player/all.svg?style=for-the-badge)
 
