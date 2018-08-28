@@ -13,8 +13,8 @@ let winWidth = 440,
 	aboutScreen,
 	windowParams = {
 		backgroundColor: '#131313',
-		icon: path.join(__dirname, 'assets/youtube-music.ico'),
-		title: 'YouTube Music Desktop',
+		icon: path.join(__dirname, 'assets/musictube.ico'),
+		title: 'MusicTube Player',
 		height: winHeight,
 		width: winWidth
 	}
@@ -36,6 +36,7 @@ function createWindow() {
 	// Show main window and hide loader
 	mainWindow.webContents.on('did-finish-load', () => {
 		mainWindow.show()
+		mainWindow.setTitle(windowParams.title)
 		if(loadingScreen !== null) loadingScreen.close()
 	})
 	// Emitted when the window is closed.
@@ -46,8 +47,8 @@ function createAboutWindow() {
 	aboutScreen = new BrowserWindow({
 		backgroundColor: '#131313',
 		frame: true,
-		icon: path.join(__dirname, 'assets/youtube-music.ico'),
-		title: 'YouTube Music Desktop',
+		icon: path.join(__dirname, 'assets/musictube.ico'),
+		title: 'MusicTube Player',
 		height: 400,
 		width: 320
 	})
@@ -76,9 +77,9 @@ app.on('ready', () => {
 // Notification message process
 ipcMain.on('notify', function(event, obj) {
 	notifier.notify({
-		title: `${obj.status} • YouTube Music Desktop`,
+		title: `${obj.status} • MusicTube Player`,
 		message: `${obj.title}\n${obj.by}`,
-		icon: path.join(__dirname, 'assets/youtube-music.ico')
+		icon: path.join(__dirname, 'assets/musictube.ico')
 	})
 })
 

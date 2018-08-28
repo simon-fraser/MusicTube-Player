@@ -23,23 +23,29 @@
 		}
 	</style>
 	<script>
-		const { remote } = require('electron');
+		const { remote, shell } = require('electron');
 		const { app } = remote;
 		document.addEventListener('DOMContentLoaded', function() {
 			document.querySelector('.js-version').textContent = `${app.getVersion()}`
+
+			aTags = document.getElementsByTagName("a");
+			for(var i = 0; i < aTags.length; i++) {
+				aTags[i].setAttribute("onclick","shell.openExternal('" + aTags[i].href + "')")
+				aTags[i].href = "#";
+			}
 		})
 	</script>
 </head>
 <body>
 	<div class="about-head">
-		<img src="assets/youtube-music.svg" width="100" alt="YouTube Music">
-		<h2>YouTube Music Desktop</h2>
+		<img src="assets/musictube.svg" width="100" alt="MusicTube Player">
+		<h2>MusicTube Player</h2>
 	</div>
 	<div class="about-content">
 		<p><u class="js-version">vx.x.x</u></p>
 		<p>By Simon Fraser <br><br>
 			(<a href="https://simonf.co.uk">https://simonf.co.uk</a>)<br>
-			(<a href="https://github.com/simon-fraser/YouTube-Music-Desktop">https://github.com/simon-fraser/YouTube-Music-Desktop</a>)
+			(<a href="https://github.com/simon-fraser/MusicTube-Player">https://github.com/simon-fraser/MusicTube-Player</a>)
 		</p>
 		<p>YouTube, YouTube Music and all logos are trademarks of YouTube, LLC.</p>
 	</div>

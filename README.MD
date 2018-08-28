@@ -1,6 +1,6 @@
-# YouTube Music Desktop
+# MusicTube Desktop
 
-This is an unofficial YouTube Music Desktop app, with some additions that I feel nessisary, notably media keys and system notifications.
+MusicTube is an unofficial YouTube Music Desktop app, with some additions that I feel necessary, notably media keys and system notifications.
 
 ## Technical
 
@@ -12,7 +12,7 @@ Tested & built on OSX (10.13.6)
 ## Install
 
 Download the latest release here.
-https://github.com/simon-fraser/YouTube-Music-Desktop/releases
+https://github.com/simon-fraser/MusicTube-Player/releases
 
 -- or --
 
@@ -22,7 +22,7 @@ Clone the repository and run `npm build` with [electron-packager](https://github
 
 ## Issues
 
-Issues can be logged on GitHub here. https://github.com/simon-fraser/YouTube-Music-Desktop/issues
+Issues can be logged on GitHub here. https://github.com/simon-fraser/MusicTube-Player/issues
 
 ## Todo
 
@@ -32,6 +32,11 @@ Issues can be logged on GitHub here. https://github.com/simon-fraser/YouTube-Mus
 - [ ] Releases for other operating systems.
 
 ---
+
+
+### Acknowledgments & Contributions
+
+Icon [Designed by rocketpixel / Freepik](http://www.freepik.com)
 
 ### Screenshots
 

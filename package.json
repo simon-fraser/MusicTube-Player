@@ -1,11 +1,11 @@
 {
-	"name": "youtube-music",
-	"version": "v1.3.0",
-	"description": "Electron based (wrapper) application for YouTube Music",
+	"name": "musictube-player",
+	"version": "v1.4.0",
+	"description": "MusicTube player is an electron wrapper application for YouTube Music with added media key support and notifications.",
 	"main": "index.js",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/simon-fraser/YouTube-Music-Desktop.git"
+		"url": "git+https://github.com/simon-fraser/MusicTube-Player.git"
 	},
 	"author": "Simon Fraser",
 	"license": "ISC",
@@ -14,7 +14,7 @@
 	},
 	"scripts": {
 		"start": "electron .",
-		"build": "rm -rf build && electron-packager . 'YouTube Music Desktop' --out=build --icon=assets/youtube-music.ico"
+		"build": "rm -rf build && electron-packager . 'MusicTube Player' --icon=assets/musictube.icns --out=build --prune=true"
 	},
 	"keywords": [
 		"youtube",
