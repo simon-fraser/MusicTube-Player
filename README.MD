@@ -1,7 +1,7 @@
-![Version](https://img.shields.io/badge/Version-1.4.0-brightgreen.svg?style=for-the-badge)
+[![GitHub release](https://img.shields.io/github/release/simon-fraser/MusicTube-Player/all.svg)](https://github.com/simon-fraser/MusicTube-Player/releases)
+![Release](https://img.shields.io/github/release-date/simon-fraser/MusicTube-Player.svg)
+[![javascript style guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-![Release](https://img.shields.io/github/release-date/simon-fraser/MusicTube-Player.svg?style=for-the-badge)
-![GitHub release](https://img.shields.io/github/release/simon-fraser/MusicTube-Player/all.svg?style=for-the-badge)
 
 # MusicTube Player
 ![Icon](assets/musictube-readme.png)
