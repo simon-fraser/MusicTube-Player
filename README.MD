@@ -2,7 +2,6 @@
 ![Release](https://img.shields.io/github/release-date/simon-fraser/MusicTube-Player.svg)
 [![javascript style guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-
 # MusicTube Player
 ![Icon](assets/musictube-readme.png)
 
