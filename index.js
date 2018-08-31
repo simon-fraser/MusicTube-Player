@@ -2,15 +2,13 @@ const { app, BrowserWindow, globalShortcut, Menu, ipcMain } = require('electron'
 const notifier = require('node-notifier')
 const path = require('path')
 
-// For heavy debugging
-// require('electron-debug')();
-
 // Vars
 let winWidth = 440
 let winHeight = 620
 let loadingScreen
 let mainWindow
 let aboutScreen
+let willQuitApp = false
 let windowParams = {
   backgroundColor: '#131313',
   icon: path.join(__dirname, 'assets/musictube.ico'),
@@ -39,8 +37,14 @@ function createWindow () {
     mainWindow.setTitle(windowParams.title)
     if (loadingScreen !== null) loadingScreen.close()
   })
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function () { mainWindow = null })
+  // Close behaviour
+  mainWindow.on('close', (e) => {
+    if (!willQuitApp) {
+      e.preventDefault()
+      mainWindow.hide()
+    }
+  })
+  mainWindow.on('closed', () => { mainWindow = null })
 }
 
 function createAboutWindow () {
@@ -73,8 +77,13 @@ app.on('ready', () => {
   skipOverAdverts()
 })
 
+// activate is triggered when clicked the dock icon (osx)
+app.on('activate', () => {
+  mainWindow.show()
+})
+
 // Notification message process
-ipcMain.on('notify', function (event, obj) {
+ipcMain.on('notify', (event, obj) => {
   notifier.notify({
     title: `${obj.status} • MusicTube Player`,
     message: `${obj.title}\n${obj.by}`,
@@ -133,10 +142,12 @@ function globalShortcuts () {
 
 function skipOverAdverts () {
   setInterval(() => {
-    mainWindow.webContents.executeJavaScript(`
-      var skip = document.getElementsByClassName('videoAdUiSkipButton')[0];
-      if(typeof skip !== "undefined") { skip.click() }
-    `)
+    if (mainWindow) {
+      mainWindow.webContents.executeJavaScript(`
+        var skip = document.getElementsByClassName('videoAdUiSkipButton')[0];
+        if(typeof skip !== "undefined") { skip.click() }
+      `)
+    }
   }, 500)
 }
 
@@ -153,9 +164,17 @@ function createMenu () {
           }
         },
         {
-          label: 'Reload',
-          accelerator: 'Cmd+R',
+          label: 'Refresh',
+          accelerator: 'CmdOrCtrl+R',
           role: 'forceReload'
+        },
+        {
+          label: 'New Window',
+          accelerator: 'CmdOrCtrl+N',
+          click () {
+            createLoadingWindow()
+            createWindow()
+          }
         },
         {
           label: 'Show Developer Tools',
@@ -166,6 +185,7 @@ function createMenu () {
           label: 'Quit',
           accelerator: 'CmdOrCtrl+Q',
           click () {
+            willQuitApp = true
             app.quit()
           }
         }

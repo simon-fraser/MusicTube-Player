@@ -1,6 +1,6 @@
 {
   "name": "musictube-player",
-  "version": "v1.4.0",
+  "version": "v1.4.1",
   "description": "MusicTube player is an electron wrapper application for YouTube Music with added media key support and notifications.",
   "main": "index.js",
   "repository": {
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "electron .",
-    "build": "rm -rf build && electron-packager . 'MusicTube Player' --icon=assets/musictube.icns --out=build --prune=true"
+    "build": "electron-packager . 'MusicTube Player' --icon=assets/musictube.icns --out=build --overwrite=true --prune=true"
   },
   "keywords": [
     "youtube",
@@ -31,7 +31,6 @@
     "electron"
   ],
   "dependencies": {
-    "electron-debug": "^2.*",
     "node-notifier": "^5.2.*"
   }
 }
