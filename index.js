@@ -2,7 +2,7 @@ const { app, BrowserWindow, globalShortcut, Menu, ipcMain } = require('electron'
 const notifier = require('node-notifier')
 const path = require('path')
 
-// Vars
+// variables
 let winWidth = 440
 let winHeight = 620
 let loadingScreen
@@ -77,9 +77,14 @@ app.on('ready', () => {
   skipOverAdverts()
 })
 
-// activate is triggered when clicked the dock icon (osx)
+// triggered when clicked the dock icon (osx)
 app.on('activate', () => {
   mainWindow.show()
+})
+
+// triggered when quitting from dock icon (osx)
+app.on('before-quit', () => {
+  willQuitApp = true
 })
 
 // Notification message process
