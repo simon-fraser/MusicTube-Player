@@ -12,6 +12,9 @@ MusicTube is an unofficial YouTube Music Desktop app, with some additions that I
 Built using [ElectronJS](https://electronjs.org/).<br>
 Tested & built on OSX (10.13.6)
 
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
+
 ---
 
 ## Install
