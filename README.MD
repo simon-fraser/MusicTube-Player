@@ -1,4 +1,5 @@
 [![GitHub release](https://img.shields.io/github/release/simon-fraser/MusicTube-Player/all.svg)](https://github.com/simon-fraser/MusicTube-Player/releases)
+![Dependencies](https://david-dm.org/simon-fraser/MusicTube-Player.svg)
 ![Release](https://img.shields.io/github/release-date/simon-fraser/MusicTube-Player.svg)
 [![javascript style guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
