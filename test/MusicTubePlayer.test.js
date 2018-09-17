@@ -5,7 +5,7 @@ const electronPath = require('electron')
 const path = require('path')
 
 describe('Application launch', function () {
-  // this.timeout (10000)
+  this.timeout (15000)
 
   beforeEach (function () {
     this.app = new Application({
