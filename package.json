@@ -10,13 +10,14 @@
   "author": "Simon Fraser",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^2.0.*",
+    "electron": "^2.0.9",
+    "electron-installer-debian": "^0.8.1",
     "electron-installer-dmg": "^2.0.0",
-    "eslint": "^5.4.0",
+    "eslint": "^5.6.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "mocha": "^5.2.0",
     "spectron": "^4.0.0",
@@ -26,7 +27,9 @@
     "start": "electron .",
     "lint": "standard node *.js||exit 0",
     "test": "mocha",
-    "osx": "electron-packager . 'MusicTube Player' --icon=assets/musictube.icns --out=build --overwrite=true --prune=true && electron-installer-dmg \"build/MusicTube Player-darwin-x64/MusicTube Player.app\" \"MusicTubePlayer\" --icon=assets/musictube.icns --overwrite"
+    "osx": "electron-packager . 'MusicTube Player' --platform=darwin --arch=x64 --out=build/osx --overwrite=true --prune=true --icon=assets/musictube.icns && electron-installer-dmg \"build/osx/MusicTube Player-darwin-x64/MusicTube Player.app\" \"MusicTubePlayer\" --out=build/osx --overwrite --icon=assets/musictube.icns",
+    "linux": "electron-packager . 'MusicTube Player' --platform=linux --arch=x64 --out=build/linux --overwrite=true --prune=true --icon=assets/musictube.png && electron-installer-debian --src \"build/linux/MusicTube Player-linux-x64/\" --arch amd64 --config debian.json",
+    "win": "electron-packager . 'MusicTube Player' --platform=win32 --arch=x64 --out=build/win --overwrite --prune=true --icon=assets/icons/win/icon.ico --asar=true"
   },
   "keywords": [
     "youtube",
