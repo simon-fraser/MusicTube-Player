@@ -12,7 +12,7 @@ let willQuitApp = false
 let windowParams = {
   backgroundColor: '#131313',
   icon: path.join(__dirname, 'assets/musictube.ico'),
-  title: 'MusicTube Player',
+  title: 'Loading...',
   height: winHeight,
   width: winWidth
 }
@@ -34,7 +34,6 @@ function createWindow () {
   // Show main window and hide loader
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show()
-    mainWindow.setTitle(windowParams.title)
     if (loadingScreen !== null) loadingScreen.close()
   })
   // Close behaviour
@@ -52,7 +51,7 @@ function createAboutWindow () {
     backgroundColor: '#131313',
     frame: true,
     icon: path.join(__dirname, 'assets/musictube.ico'),
-    title: 'MusicTube Player',
+    title: 'About MusicTube Player',
     height: 400,
     width: 320
   })
