@@ -11,16 +11,21 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^2.0.*",
+    "electron-installer-dmg": "^2.0.0",
     "eslint": "^5.4.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^4.0.0",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "standard": "^12.0.1"
   },
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager . 'MusicTube Player' --icon=assets/musictube.icns --out=build --overwrite=true --prune=true"
+    "lint": "standard node *.js||exit 0",
+    "osx": "electron-packager . 'MusicTube Player' --icon=assets/musictube.icns --out=build --overwrite=true --prune=true && electron-installer-dmg \"build/MusicTube Player-darwin-x64/MusicTube Player.app\" \"MusicTubePlayer\" --icon=assets/musictube.icns --overwrite",
+    "unix": "",
+    "win": ""
   },
   "keywords": [
     "youtube",
