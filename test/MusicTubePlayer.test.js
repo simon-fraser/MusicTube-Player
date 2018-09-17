@@ -5,7 +5,7 @@ const electronPath = require('electron')
 const path = require('path')
 
 describe('Application launch', function () {
-  this.timeout (10000)
+  // this.timeout (10000)
 
   beforeEach (function () {
     this.app = new Application({
@@ -28,7 +28,7 @@ describe('Application launch', function () {
   })
 
   it ('check window title - inherits from parent frame', function () {
-    return this.app.client.getTitle().then(function (title) {
+    return this.app.client.waitUntilWindowLoaded().getTitle().then(function (title) {
       assert.equal(title, 'YouTube Music')
     })
   })
