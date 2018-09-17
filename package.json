@@ -26,9 +26,7 @@
     "start": "electron .",
     "lint": "standard node *.js||exit 0",
     "test": "mocha",
-    "osx": "electron-packager . 'MusicTube Player' --icon=assets/musictube.icns --out=build --overwrite=true --prune=true && electron-installer-dmg \"build/MusicTube Player-darwin-x64/MusicTube Player.app\" \"MusicTubePlayer\" --icon=assets/musictube.icns --overwrite",
-    "unix": "",
-    "win": ""
+    "osx": "electron-packager . 'MusicTube Player' --icon=assets/musictube.icns --out=build --overwrite=true --prune=true && electron-installer-dmg \"build/MusicTube Player-darwin-x64/MusicTube Player.app\" \"MusicTubePlayer\" --icon=assets/musictube.icns --overwrite"
   },
   "keywords": [
     "youtube",

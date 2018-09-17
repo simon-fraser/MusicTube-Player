@@ -1,7 +1,7 @@
+[![CircleCI](https://circleci.com/gh/simon-fraser/MusicTube-Player/tree/master.svg?style=svg)](https://circleci.com/gh/simon-fraser/MusicTube-Player/tree/master)
 [![GitHub release](https://img.shields.io/github/release/simon-fraser/MusicTube-Player/all.svg)](https://github.com/simon-fraser/MusicTube-Player/releases)
-![Dependencies](https://david-dm.org/simon-fraser/MusicTube-Player.svg)
 ![Release](https://img.shields.io/github/release-date/simon-fraser/MusicTube-Player.svg)
-[![javascript style guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+![Dependencies](https://david-dm.org/simon-fraser/MusicTube-Player.svg)
 
 # MusicTube Player
 ![Icon](assets/musictube-readme.png)
@@ -10,8 +10,9 @@ MusicTube is an unofficial YouTube Music Desktop app, with some additions that I
 
 ## Technical
 
-Built using [ElectronJS](https://electronjs.org/).<br>
-Tested & built on OSX (10.13.6)
+- Built using [ElectronJS](https://electronjs.org/).<br>
+- Tested & built on OSX (10.13.6)
+- CircleCI tests ran using docker image `node:10-browsers-legacy`
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
@@ -25,7 +26,7 @@ https://github.com/simon-fraser/MusicTube-Player/releases
 
 -- or --
 
-Clone the repository and run `npm build` with [electron-packager](https://github.com/electron-userland/electron-packager) installed.
+Clone the repository and run the relevant build command, eg `npm osx`
 
 ---
 
@@ -37,7 +38,6 @@ Issues can be logged on GitHub here. https://github.com/simon-fraser/MusicTube-P
 
 - [X] Notifications on track change,play/pause.
 - [X] About Page
-- [ ] ~~Update <https://github.com/jenslind/electron-gh-releases>~~
 - [ ] Releases for other operating systems.
 
 ---
