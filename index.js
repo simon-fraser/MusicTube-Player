@@ -1,4 +1,5 @@
 const { app, BrowserWindow, globalShortcut, Menu, ipcMain } = require('electron')
+const windowStateKeeper = require('electron-window-state')
 const notifier = require('node-notifier')
 const path = require('path')
 
@@ -9,12 +10,18 @@ let loadingScreen
 let mainWindow
 let aboutScreen
 let willQuitApp = false
+let mainWindowState = windowStateKeeper({
+  defaultWidth: winWidth,
+  defaultHeight: winHeight
+})
 let windowParams = {
   backgroundColor: '#131313',
   icon: path.join(__dirname, 'assets/musictube.ico'),
   title: 'Loading...',
-  height: winHeight,
-  width: winWidth
+  x: mainWindowState.x,
+  y: mainWindowState.y,
+  width: mainWindowState.width,
+  height: mainWindowState.height,
 }
 
 function createLoadingWindow () {
