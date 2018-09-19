@@ -14,7 +14,7 @@ let windowParams = {
   icon: path.join(__dirname, 'assets/musictube.ico'),
   title: 'Loading...',
   height: winHeight,
-  width: winWidth
+  width: winWidth, // test
 }
 
 function createLoadingWindow () {
