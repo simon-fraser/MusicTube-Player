@@ -26,7 +26,7 @@
   "scripts": {
     "start": "electron .",
     "lint": "standard",
-    "test": "mocha",
+    "test": "standard && mocha",
     "osx": "electron-packager . 'MusicTube Player' --platform=darwin --arch=x64 --out=build/osx --overwrite=true --prune=true --icon=assets/musictube.icns && electron-installer-dmg \"build/osx/MusicTube Player-darwin-x64/MusicTube Player.app\" \"MusicTubePlayer\" --out=build/osx --overwrite --icon=assets/musictube.icns",
     "linux": "electron-packager . 'MusicTube Player' --platform=linux --arch=x64 --out=build/linux --overwrite=true --prune=true --icon=assets/musictube.png && electron-installer-debian --src \"build/linux/MusicTube Player-linux-x64/\" --arch amd64 --config debian.json",
     "win": "electron-packager . 'MusicTube Player' --platform=win32 --arch=x64 --out=build/win --overwrite --prune=true --icon=assets/icons/win/icon.ico --asar=true"
