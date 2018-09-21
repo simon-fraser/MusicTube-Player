@@ -1,4 +1,4 @@
-[![CircleCI](https://img.shields.io/circleci/project/github/simon-fraser/MusicTube-Player/master.svg?logo=circleci)](https://circleci.com/gh/simon-fraser/MusicTube-Player/tree/master)
+[![CircleCI](https://circleci.com/gh/simon-fraser/MusicTube-Player.svg?style=svg)](https://circleci.com/gh/simon-fraser/MusicTube-Player)
 [![GitHub release](https://img.shields.io/github/release/simon-fraser/MusicTube-Player/all.svg)](https://github.com/simon-fraser/MusicTube-Player/releases)
 ![Release](https://img.shields.io/github/release-date/simon-fraser/MusicTube-Player.svg?colorB=brightgreen)
 ![Dependencies](https://david-dm.org/simon-fraser/MusicTube-Player.svg)
