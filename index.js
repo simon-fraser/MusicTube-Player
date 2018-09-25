@@ -161,7 +161,7 @@ function skipOverAdverts () {
         if(typeof skip !== "undefined") { skip.click() }
       `)
     }
-  }, 500)
+  }, 1000)
 }
 
 function createMenu () {
