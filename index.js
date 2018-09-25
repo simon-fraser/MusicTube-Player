@@ -1,4 +1,5 @@
 const { app, BrowserWindow, globalShortcut, Menu, ipcMain } = require('electron')
+const windowStateKeeper = require('electron-window-state')
 const notifier = require('node-notifier')
 const path = require('path')
 
@@ -12,13 +13,15 @@ let willQuitApp = false
 let windowParams = {
   backgroundColor: '#131313',
   icon: path.join(__dirname, 'assets/musictube.ico'),
-  title: 'Loading...',
-  height: winHeight,
-  width: winWidth
+  title: 'Loading...'
 }
 
 function createLoadingWindow () {
-  loadingScreen = new BrowserWindow(Object.assign(windowParams, { parent: mainWindow }))
+  loadingScreen = new BrowserWindow(Object.assign(windowParams, {
+    parent: mainWindow,
+    width: winWidth,
+    height: winHeight
+  }))
   loadingScreen.loadURL(`file://${__dirname}/loading.html`)
   loadingScreen.on('closed', () => { loadingScreen = null })
   // Show loader
@@ -28,16 +31,29 @@ function createLoadingWindow () {
 }
 
 function createWindow () {
-  mainWindow = new BrowserWindow(Object.assign(windowParams, { show: false }))
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: winWidth,
+    defaultHeight: winHeight
+  })
+
+  mainWindow = new BrowserWindow(Object.assign(windowParams, {
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
+    show: false
+  }))
   mainWindow.loadURL(`https://music.youtube.com/`)
   mainWindow.hide()
   // Show main window and hide loader
   mainWindow.webContents.on('did-finish-load', () => {
+    mainWindowState.manage(mainWindow)
     mainWindow.show()
     if (loadingScreen !== null) loadingScreen.close()
   })
   // Close behaviour
   mainWindow.on('close', (e) => {
+    mainWindowState.saveState(mainWindow)
     if (!willQuitApp) {
       e.preventDefault()
       mainWindow.hide()
