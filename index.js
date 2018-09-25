@@ -18,9 +18,10 @@ let windowParams = {
 
 function createLoadingWindow () {
   loadingScreen = new BrowserWindow(Object.assign(windowParams, {
+    frame: false,
     parent: mainWindow,
     width: winWidth,
-    height: winHeight
+    height: winWidth
   }))
   loadingScreen.loadURL(`file://${__dirname}/loading.html`)
   loadingScreen.on('closed', () => { loadingScreen = null })
@@ -37,11 +38,12 @@ function createWindow () {
   })
 
   mainWindow = new BrowserWindow(Object.assign(windowParams, {
-    x: mainWindowState.x,
-    y: mainWindowState.y,
-    width: mainWindowState.width,
+    frame: true,
     height: mainWindowState.height,
-    show: false
+    show: false,
+    width: mainWindowState.width,
+    x: mainWindowState.x,
+    y: mainWindowState.y
   }))
   mainWindow.loadURL(`https://music.youtube.com/`)
   mainWindow.hide()
@@ -76,15 +78,6 @@ function createAboutWindow () {
 
 // Application ready to run
 app.on('ready', () => {
-  // Window position calculation, needs to be ran inside app ready
-  const { screen } = require('electron')
-  const display = screen.getPrimaryDisplay().workArea
-  if (display.width) {
-    windowParams.x = Math.round(display.width - winWidth) // to the right
-    windowParams.y = Math.round(((display.height + display.y) / 2) - (winHeight / 2)) // vertical center
-  }
-
-  // Run
   createLoadingWindow()
   createWindow()
   globalShortcuts()
@@ -117,14 +110,14 @@ function globalShortcuts () {
     mainWindow.webContents.executeJavaScript(`document.getElementsByClassName('play-pause-button')[0].click()`)
     setTimeout(() => {
       mainWindow.webContents.executeJavaScript(`
-        var ipcRenderer = require('electron').ipcRenderer;
-        var status = (document.getElementsByClassName('play-pause-button')[0].title.includes('Pla'))? 'Paused' : 'Playing';
+        var ipcRenderer = require('electron').ipcRenderer
+        var status = (document.getElementsByClassName('play-pause-button')[0].title.includes('Pla'))? 'Paused' : 'Playing'
         var value = {
           status: status,
           title: document.getElementsByClassName('ytmusic-player-bar title')[0].innerText,
           by: document.getElementsByClassName('ytmusic-player-bar byline')[0].innerText,
         }
-        ipcRenderer.send('notify', value);
+        ipcRenderer.send('notify', value)
       `)
     }, 500)
   })
@@ -133,13 +126,13 @@ function globalShortcuts () {
     mainWindow.webContents.executeJavaScript(`document.getElementsByClassName('next-button')[0].click()`)
     setTimeout(() => {
       mainWindow.webContents.executeJavaScript(`
-        var ipcRenderer = require('electron').ipcRenderer;
+        var ipcRenderer = require('electron').ipcRenderer
         var value = {
           status: "Now Playing",
           title: document.getElementsByClassName('ytmusic-player-bar title')[0].innerText,
           by: document.getElementsByClassName('ytmusic-player-bar byline')[0].innerText,
         }
-        ipcRenderer.send('notify', value);
+        ipcRenderer.send('notify', value)
       `)
     }, 500)
   })
@@ -148,13 +141,13 @@ function globalShortcuts () {
     mainWindow.webContents.executeJavaScript(`document.getElementsByClassName('previous-button')[0].click()`)
     setTimeout(() => {
       mainWindow.webContents.executeJavaScript(`
-        var ipcRenderer = require('electron').ipcRenderer;
+        var ipcRenderer = require('electron').ipcRenderer
         var value = {
           status: "Now Playing",
           title: document.getElementsByClassName('ytmusic-player-bar title')[0].innerText,
           by: document.getElementsByClassName('ytmusic-player-bar byline')[0].innerText,
         }
-        ipcRenderer.send('notify', value);
+        ipcRenderer.send('notify', value)
       `)
     }, 500)
   })
@@ -164,7 +157,7 @@ function skipOverAdverts () {
   setInterval(() => {
     if (mainWindow) {
       mainWindow.webContents.executeJavaScript(`
-        var skip = document.getElementsByClassName('videoAdUiSkipButton')[0];
+        var skip = document.getElementsByClassName('videoAdUiSkipButton')[0]
         if(typeof skip !== "undefined") { skip.click() }
       `)
     }
