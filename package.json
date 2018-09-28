@@ -1,6 +1,6 @@
 {
   "name": "musictube-player",
-  "version": "v1.4.3",
+  "version": "v1.5.3",
   "description": "MusicTube player is an electron wrapper application for YouTube Music with added media key support and notifications.",
   "main": "index.js",
   "repository": {
@@ -10,7 +10,7 @@
   "author": "Simon Fraser",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^2.0.9",
+    "electron": "^3.0.2",
     "electron-installer-dmg": "^2.0.0",
     "electron-packager": "^12.1.2",
     "eslint": "^5.6.0",
@@ -28,7 +28,7 @@
     "lint": "standard",
     "test": "standard && mocha",
     "osx": "electron-packager . 'MusicTube Player' --platform=darwin --arch=x64 --out=build/osx --overwrite=true --prune=true --icon=assets/musictube.icns && electron-installer-dmg \"build/osx/MusicTube Player-darwin-x64/MusicTube Player.app\" \"MusicTubePlayer\" --out=build/osx --overwrite --icon=assets/musictube.icns",
-    "win": "electron-packager . 'MusicTube Player' --platform=win32 --arch=x64 --out=build/win --overwrite --prune=true --icon=assets/icons/win/icon.ico --asar=true"
+    "win": "electron-packager . \"MusicTubePlayer\" --platform=win32 --arch=x64 --out=build/win --overwrite --prune=true --icon=\"assets/musictube.ico\" --version-string.CompanyName='simon-fraser' --version-string.FileDescription='MusicTube Player' --version-string.ProductName='MusicTube Player' --app-version=%npm_package_version% --asar"
   },
   "keywords": [
     "youtube",
