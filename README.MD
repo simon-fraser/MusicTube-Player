@@ -38,7 +38,9 @@ npm run test
 ```
 
 ## Release History
-
+* 1.5.0
+    * Pull Request #4 Windows build script works now.
+    * Introducing skip logic for the YouTube `You Still There` popup notice which pauses playback
 * 1.4.3
     * Pull Request #2 introducing [electron-window-state](https://npmjs.com/package/electron-window-state).
     * Redesigned loading screen.

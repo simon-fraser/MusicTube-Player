@@ -82,7 +82,7 @@ app.on('ready', () => {
   createWindow()
   globalShortcuts()
   createMenu()
-  skipOverAdverts()
+  skipOver()
 })
 
 // triggered when clicked the dock icon (osx)
@@ -153,15 +153,25 @@ function globalShortcuts () {
   })
 }
 
-function skipOverAdverts () {
+function skipOver () {
+  // YouTube Adverts - Will auto click skip button
   setInterval(() => {
     if (mainWindow) {
       mainWindow.webContents.executeJavaScript(`
-        var skip = document.getElementsByClassName('videoAdUiSkipButton')[0]
-        if(typeof skip !== "undefined") { skip.click() }
+        var skip = document.querySelector('.videoAdUiSkipButton')
+        if (skip) { skip.click() }
       `)
     }
-  }, 1000)
+  }, 250)
+  // You Still There popup notice
+  setInterval(() => {
+    if (mainWindow) {
+      mainWindow.webContents.executeJavaScript(`
+        var stillThere = document.querySelector('.ytmusic-you-there-renderer .yt-button-renderer')
+        if (stillThere) { stillThere.click() }
+      `)
+    }
+  }, 250)
 }
 
 function createMenu () {
