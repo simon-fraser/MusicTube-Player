@@ -1,6 +1,5 @@
 const { app, BrowserWindow, globalShortcut, ipcMain, Menu, Tray } = require('electron')
 const windowStateKeeper = require('electron-window-state')
-const notifier = require('node-notifier')
 const path = require('path')
 
 // variables
@@ -139,7 +138,36 @@ function trayIcon () {
   tray = new Tray(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}.png`))
   tray.setToolTip('MusicTube Player')
   tray.on('click', () => {
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.show()
+  })
+  trayContextMenu()
+}
+
+function trayContextMenu () {
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: app.getName()
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: 'About',
+      click: () => {
+        createAboutWindow()
+      }
+    },
+    {
+      label: 'Quit',
+      click: () => {
+        app.quit()
+      }
+    }
+  ])
+  tray.setContextMenu(contextMenu)
+  tray.on('right-click', () => {
+    tray.popUpContextMenu(contextMenu)
   })
 }
 
@@ -148,9 +176,9 @@ function playStatus () {
     if (mainWindow) {
       mainWindow.webContents.executeJavaScript(`
         var ipcRenderer = require('electron').ipcRenderer
-        var status = (document.querySelector('.play-pause-button').title === 'Pause')? 'Playing' : 'Paused'
+        var status = (!document.querySelector('.play-pause-button').title.includes('Paus')) ? 'Playing' : 'Paused'
         var title = (document.querySelector('.title.ytmusic-player-bar')) ? document.querySelector('.title.ytmusic-player-bar').innerText : ''
-        var artist = (document.querySelector('.byline.ytmusic-player-bar')) ? document.querySelector('.byline.ytmusic-player-bar').innerText : ''
+        var artist = (document.querySelector('.byline.ytmusic-player-bar')) ? document.querySelector('.byline.ytmusic-player-bar').innerText.split('•')[0].trim() : ''
         var object = {
           status: status,
           title: title,
@@ -186,6 +214,7 @@ function skipOver () {
 // Application ready to run
 app.on('ready', () => {
   trayTheme = (process.platform === 'darwin') ? 'dark' : 'light'
+  app.setName('MusicTube Player')
 
   createLoadingWindow()
   createWindow()
@@ -209,10 +238,10 @@ app.on('before-quit', () => {
 // Status IPC receiver
 ipcMain.on('player', (event, object) => {
   if (JSON.stringify(object) !== status && object.title !== '' && object.artist !== '') {
-    notifier.notify({
-      title: `${object.status} • MusicTube Player`,
-      message: `${object.title}\n${object.artist}`,
-      icon: path.join(__dirname, 'assets/musictube.ico')
+    tray.displayBalloon({
+      title: object.title,
+      content: object.artist.replace(/\n/g, ''),
+      icon: path.join(__dirname, 'assets', 'musictube.png')
     })
   }
   status = JSON.stringify(object)
