@@ -15,7 +15,7 @@ OSX
 npm install && npm run osx
 ```
 
-~~Windows:~~
+Windows:
 
 ```sh
 npm install && npm run win
@@ -38,6 +38,9 @@ npm run test
 ```
 
 ## Release History
+* 1.6.0
+    * New notification code that improves the notification frequency and accuracy.
+    * Added Tray icon which currently toggles application visibility.
 * 1.5.0
     * Pull Request #4 Windows build script works now.
     * Introducing skip logic for the YouTube `You Still There` popup notice which pauses playback

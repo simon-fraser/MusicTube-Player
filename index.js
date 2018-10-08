@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut, Menu, ipcMain } = require('electron')
+const { app, BrowserWindow, globalShortcut, ipcMain, Menu, Tray } = require('electron')
 const windowStateKeeper = require('electron-window-state')
 const notifier = require('node-notifier')
 const path = require('path')
@@ -9,6 +9,8 @@ let winHeight = 620
 let loadingScreen
 let mainWindow
 let aboutScreen
+let tray
+let status
 let willQuitApp = false
 let windowParams = {
   backgroundColor: '#131313',
@@ -25,7 +27,6 @@ function createLoadingWindow () {
   }))
   loadingScreen.loadURL(`file://${__dirname}/loading.html`)
   loadingScreen.on('closed', () => { loadingScreen = null })
-  // Show loader
   loadingScreen.webContents.on('did-finish-load', () => {
     loadingScreen.show()
   })
@@ -36,7 +37,6 @@ function createWindow () {
     defaultWidth: winWidth,
     defaultHeight: winHeight
   })
-
   mainWindow = new BrowserWindow(Object.assign(windowParams, {
     frame: true,
     height: mainWindowState.height,
@@ -82,6 +82,8 @@ app.on('ready', () => {
   createWindow()
   globalShortcuts()
   createMenu()
+  trayIcon()
+  playStatus()
   skipOver()
 })
 
@@ -95,61 +97,39 @@ app.on('before-quit', () => {
   willQuitApp = true
 })
 
-// Notification message process
-ipcMain.on('notify', (event, obj) => {
-  notifier.notify({
-    title: `${obj.status} • MusicTube Player`,
-    message: `${obj.title}\n${obj.by}`,
-    icon: path.join(__dirname, 'assets/musictube.ico')
-  })
+// Status IPC receiver
+ipcMain.on('player', (event, object) => {
+  if (JSON.stringify(object) !== status && object.title !== '' && object.artist !== '') {
+    notifier.notify({
+      title: `${object.status} • MusicTube Player`,
+      message: `${object.title}\n${object.artist}`,
+      icon: path.join(__dirname, 'assets/musictube.ico')
+    })
+  }
+  status = JSON.stringify(object)
+  tray.setImage(path.join(__dirname, `assets/icons/menu-standard-${object.status.toLowerCase()}.png`))
 })
 
 function globalShortcuts () {
   // Play,Pause
   globalShortcut.register('MediaPlayPause', () => {
-    mainWindow.webContents.executeJavaScript(`document.getElementsByClassName('play-pause-button')[0].click()`)
-    setTimeout(() => {
-      mainWindow.webContents.executeJavaScript(`
-        var ipcRenderer = require('electron').ipcRenderer
-        var status = (document.getElementsByClassName('play-pause-button')[0].title.includes('Pla'))? 'Paused' : 'Playing'
-        var value = {
-          status: status,
-          title: document.getElementsByClassName('ytmusic-player-bar title')[0].innerText,
-          by: document.getElementsByClassName('ytmusic-player-bar byline')[0].innerText,
-        }
-        ipcRenderer.send('notify', value)
-      `)
-    }, 500)
+    mainWindow.webContents.executeJavaScript(`document.querySelector('.play-pause-button').click()`)
   })
   // Next
   globalShortcut.register('MediaNextTrack', () => {
-    mainWindow.webContents.executeJavaScript(`document.getElementsByClassName('next-button')[0].click()`)
-    setTimeout(() => {
-      mainWindow.webContents.executeJavaScript(`
-        var ipcRenderer = require('electron').ipcRenderer
-        var value = {
-          status: "Now Playing",
-          title: document.getElementsByClassName('ytmusic-player-bar title')[0].innerText,
-          by: document.getElementsByClassName('ytmusic-player-bar byline')[0].innerText,
-        }
-        ipcRenderer.send('notify', value)
-      `)
-    }, 500)
+    mainWindow.webContents.executeJavaScript(`document.querySelector('.next-button').click()`)
   })
   // Previous
   globalShortcut.register('MediaPreviousTrack', () => {
-    mainWindow.webContents.executeJavaScript(`document.getElementsByClassName('previous-button')[0].click()`)
-    setTimeout(() => {
-      mainWindow.webContents.executeJavaScript(`
-        var ipcRenderer = require('electron').ipcRenderer
-        var value = {
-          status: "Now Playing",
-          title: document.getElementsByClassName('ytmusic-player-bar title')[0].innerText,
-          by: document.getElementsByClassName('ytmusic-player-bar byline')[0].innerText,
-        }
-        ipcRenderer.send('notify', value)
-      `)
-    }, 500)
+    mainWindow.webContents.executeJavaScript(`document.querySelector('.previous-button').click()`)
+  })
+}
+
+function trayIcon () {
+  tray = new Tray(path.join(__dirname, 'assets/icons/menu-standard.png'))
+  tray.setToolTip('MusicTube Player')
+  tray.on('click', () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
   })
 }
 
@@ -169,6 +149,25 @@ function skipOver () {
       mainWindow.webContents.executeJavaScript(`
         var stillThere = document.querySelector('.ytmusic-you-there-renderer .yt-button-renderer')
         if (stillThere) { stillThere.click() }
+      `)
+    }
+  }, 250)
+}
+
+function playStatus () {
+  setInterval(() => {
+    if (mainWindow) {
+      mainWindow.webContents.executeJavaScript(`
+        var ipcRenderer = require('electron').ipcRenderer
+        var status = (document.querySelector('.play-pause-button').title === 'Pause')? 'Playing' : 'Paused'
+        var title = (document.querySelector('.title.ytmusic-player-bar')) ? document.querySelector('.title.ytmusic-player-bar').innerText : ''
+        var artist = (document.querySelector('.byline.ytmusic-player-bar')) ? document.querySelector('.byline.ytmusic-player-bar').innerText : ''
+        var object = {
+          status: status,
+          title: title,
+          artist: artist
+        }
+        ipcRenderer.send('player', object)
       `)
     }
   }, 250)

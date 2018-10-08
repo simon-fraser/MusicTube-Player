@@ -1,6 +1,6 @@
 {
   "name": "musictubeplayer",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "MusicTube player is an electron wrapper application for YouTube Music with added media key support and notifications.",
   "main": "index.js",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "git+https://github.com/simon-fraser/MusicTube-Player.git"
   },
   "author": "Simon Fraser",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^3.0.2",
     "electron-installer-dmg": "^2.0.0",
