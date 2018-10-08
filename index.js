@@ -18,6 +18,18 @@ let windowParams = {
   title: 'Loading...'
 }
 
+function createAboutWindow () {
+  aboutScreen = new BrowserWindow({
+    backgroundColor: '#131313',
+    frame: true,
+    icon: path.join(__dirname, 'assets/musictube.ico'),
+    title: 'About MusicTube Player',
+    height: 400,
+    width: 320
+  })
+  aboutScreen.loadURL(`file://${__dirname}/about.html`)
+}
+
 function createLoadingWindow () {
   loadingScreen = new BrowserWindow(Object.assign(windowParams, {
     frame: false,
@@ -64,52 +76,6 @@ function createWindow () {
   mainWindow.on('closed', () => { mainWindow = null })
 }
 
-function createAboutWindow () {
-  aboutScreen = new BrowserWindow({
-    backgroundColor: '#131313',
-    frame: true,
-    icon: path.join(__dirname, 'assets/musictube.ico'),
-    title: 'About MusicTube Player',
-    height: 400,
-    width: 320
-  })
-  aboutScreen.loadURL(`file://${__dirname}/about.html`)
-}
-
-// Application ready to run
-app.on('ready', () => {
-  createLoadingWindow()
-  createWindow()
-  globalShortcuts()
-  createMenu()
-  trayIcon()
-  playStatus()
-  skipOver()
-})
-
-// triggered when clicked the dock icon (osx)
-app.on('activate', () => {
-  mainWindow.show()
-})
-
-// triggered when quitting from dock icon (osx)
-app.on('before-quit', () => {
-  willQuitApp = true
-})
-
-// Status IPC receiver
-ipcMain.on('player', (event, object) => {
-  if (JSON.stringify(object) !== status && object.title !== '' && object.artist !== '') {
-    notifier.notify({
-      title: `${object.status} • MusicTube Player`,
-      message: `${object.title}\n${object.artist}`,
-      icon: path.join(__dirname, 'assets/musictube.ico')
-    })
-  }
-  status = JSON.stringify(object)
-  tray.setImage(path.join(__dirname, `assets/icons/menu-standard-${object.status.toLowerCase()}.png`))
-})
-
 function globalShortcuts () {
   // Play,Pause
   globalShortcut.register('MediaPlayPause', () => {
@@ -123,54 +89,6 @@ function globalShortcuts () {
   globalShortcut.register('MediaPreviousTrack', () => {
     mainWindow.webContents.executeJavaScript(`document.querySelector('.previous-button').click()`)
   })
-}
-
-function trayIcon () {
-  tray = new Tray(path.join(__dirname, 'assets/icons/menu-standard.png'))
-  tray.setToolTip('MusicTube Player')
-  tray.on('click', () => {
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
-  })
-}
-
-function skipOver () {
-  // YouTube Adverts - Will auto click skip button
-  setInterval(() => {
-    if (mainWindow) {
-      mainWindow.webContents.executeJavaScript(`
-        var skip = document.querySelector('.videoAdUiSkipButton')
-        if (skip) { skip.click() }
-      `)
-    }
-  }, 250)
-  // You Still There popup notice
-  setInterval(() => {
-    if (mainWindow) {
-      mainWindow.webContents.executeJavaScript(`
-        var stillThere = document.querySelector('.ytmusic-you-there-renderer .yt-button-renderer')
-        if (stillThere) { stillThere.click() }
-      `)
-    }
-  }, 250)
-}
-
-function playStatus () {
-  setInterval(() => {
-    if (mainWindow) {
-      mainWindow.webContents.executeJavaScript(`
-        var ipcRenderer = require('electron').ipcRenderer
-        var status = (document.querySelector('.play-pause-button').title === 'Pause')? 'Playing' : 'Paused'
-        var title = (document.querySelector('.title.ytmusic-player-bar')) ? document.querySelector('.title.ytmusic-player-bar').innerText : ''
-        var artist = (document.querySelector('.byline.ytmusic-player-bar')) ? document.querySelector('.byline.ytmusic-player-bar').innerText : ''
-        var object = {
-          status: status,
-          title: title,
-          artist: artist
-        }
-        ipcRenderer.send('player', object)
-      `)
-    }
-  }, 250)
 }
 
 function createMenu () {
@@ -215,3 +133,85 @@ function createMenu () {
     }]
   ))
 }
+
+function trayIcon () {
+  tray = new Tray(path.join(__dirname, 'assets/icons/menu-standard.png'))
+  tray.setToolTip('MusicTube Player')
+  tray.on('click', () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+  })
+}
+
+function playStatus () {
+  setInterval(() => {
+    if (mainWindow) {
+      mainWindow.webContents.executeJavaScript(`
+        var ipcRenderer = require('electron').ipcRenderer
+        var status = (document.querySelector('.play-pause-button').title === 'Pause')? 'Playing' : 'Paused'
+        var title = (document.querySelector('.title.ytmusic-player-bar')) ? document.querySelector('.title.ytmusic-player-bar').innerText : ''
+        var artist = (document.querySelector('.byline.ytmusic-player-bar')) ? document.querySelector('.byline.ytmusic-player-bar').innerText : ''
+        var object = {
+          status: status,
+          title: title,
+          artist: artist
+        }
+        ipcRenderer.send('player', object)
+      `)
+    }
+  }, 250)
+}
+
+function skipOver () {
+  // YouTube Adverts - Will auto click skip button
+  setInterval(() => {
+    if (mainWindow) {
+      mainWindow.webContents.executeJavaScript(`
+        var skip = document.querySelector('.videoAdUiSkipButton')
+        if (skip) { skip.click() }
+      `)
+    }
+  }, 250)
+  // You Still There popup notice
+  setInterval(() => {
+    if (mainWindow) {
+      mainWindow.webContents.executeJavaScript(`
+        var stillThere = document.querySelector('.ytmusic-you-there-renderer .yt-button-renderer')
+        if (stillThere) { stillThere.click() }
+      `)
+    }
+  }, 250)
+}
+
+// Application ready to run
+app.on('ready', () => {
+  createLoadingWindow()
+  createWindow()
+  globalShortcuts()
+  createMenu()
+  trayIcon()
+  playStatus()
+  skipOver()
+})
+
+// triggered when clicked the dock icon (osx)
+app.on('activate', () => {
+  mainWindow.show()
+})
+
+// triggered when quitting from dock icon (osx)
+app.on('before-quit', () => {
+  willQuitApp = true
+})
+
+// Status IPC receiver
+ipcMain.on('player', (event, object) => {
+  if (JSON.stringify(object) !== status && object.title !== '' && object.artist !== '') {
+    notifier.notify({
+      title: `${object.status} • MusicTube Player`,
+      message: `${object.title}\n${object.artist}`,
+      icon: path.join(__dirname, 'assets/musictube.ico')
+    })
+  }
+  status = JSON.stringify(object)
+  tray.setImage(path.join(__dirname, `assets/icons/menu-standard-${object.status.toLowerCase()}.png`))
+})
