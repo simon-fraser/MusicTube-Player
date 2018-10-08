@@ -10,6 +10,7 @@ let loadingScreen
 let mainWindow
 let aboutScreen
 let tray
+let trayTheme
 let status
 let willQuitApp = false
 let windowParams = {
@@ -135,7 +136,7 @@ function createMenu () {
 }
 
 function trayIcon () {
-  tray = new Tray(path.join(__dirname, 'assets/icons/menu-standard.png'))
+  tray = new Tray(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}.png`))
   tray.setToolTip('MusicTube Player')
   tray.on('click', () => {
     mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
@@ -184,6 +185,8 @@ function skipOver () {
 
 // Application ready to run
 app.on('ready', () => {
+  trayTheme = (process.platform === 'darwin') ? 'dark' : 'light'
+
   createLoadingWindow()
   createWindow()
   globalShortcuts()
@@ -213,5 +216,5 @@ ipcMain.on('player', (event, object) => {
     })
   }
   status = JSON.stringify(object)
-  tray.setImage(path.join(__dirname, `assets/icons/menu-standard-${object.status.toLowerCase()}.png`))
+  tray.setImage(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}-${object.status.toLowerCase()}.png`))
 })
