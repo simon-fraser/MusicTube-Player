@@ -79,6 +79,7 @@ function createWindow () {
     }
   })
   mainWindow.on('closed', () => { mainWindow = null })
+  mainWindow.setMenu(null)
 }
 
 function globalShortcuts () {
@@ -202,8 +203,8 @@ ipcMain.on('player', (event, object) => {
   if (JSON.stringify(object) !== status && object.title !== '' && object.artist !== '') {
     if (isWindows) {
       tray.displayBalloon({
-        title: object.title,
-        content: object.artist.replace(/\n/g, ''),
+        title: `${app.getName()} • ${object.status}`,
+        content: `${object.title}\n${object.artist}`,
         icon: path.join(__dirname, 'assets/musictube.png')
       })
     } else {
