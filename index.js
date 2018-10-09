@@ -1,6 +1,9 @@
 const { app, BrowserWindow, globalShortcut, ipcMain, Menu, Tray } = require('electron')
-const windowStateKeeper = require('electron-window-state')
+const notifier = require('node-notifier')
 const path = require('path')
+const windowStateKeeper = require('electron-window-state')
+
+require('electron-debug')({ enabled: false })
 
 // variables
 let winWidth = 440
@@ -17,6 +20,8 @@ let windowParams = {
   icon: path.join(__dirname, 'assets/musictube.ico'),
   title: 'Loading...'
 }
+const isMac = process.platform === 'darwin'
+const isWindows = process.platform === 'win32'
 
 function createAboutWindow () {
   aboutScreen = new BrowserWindow({
@@ -91,49 +96,6 @@ function globalShortcuts () {
   })
 }
 
-function createMenu () {
-  Menu.setApplicationMenu(Menu.buildFromTemplate(
-    [{
-      label: 'Application',
-      submenu: [
-        {
-          label: 'About',
-          accelerator: 'CmdOrCtrl+I',
-          click () {
-            createAboutWindow()
-          }
-        },
-        {
-          label: 'Refresh',
-          accelerator: 'CmdOrCtrl+R',
-          role: 'forceReload'
-        },
-        {
-          label: 'New Window',
-          accelerator: 'CmdOrCtrl+N',
-          click () {
-            createLoadingWindow()
-            createWindow()
-          }
-        },
-        {
-          label: 'Show Developer Tools',
-          accelerator: 'CmdOrCtrl+Shift+I',
-          role: 'toggleDevTools'
-        },
-        {
-          label: 'Quit',
-          accelerator: 'CmdOrCtrl+Q',
-          click () {
-            willQuitApp = true
-            app.quit()
-          }
-        }
-      ]
-    }]
-  ))
-}
-
 function trayIcon () {
   tray = new Tray(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}.png`))
   tray.setToolTip('MusicTube Player')
@@ -141,6 +103,7 @@ function trayIcon () {
     if (mainWindow.isMinimized()) mainWindow.restore()
     mainWindow.show()
   })
+
   trayContextMenu()
 }
 
@@ -176,7 +139,7 @@ function playStatus () {
     if (mainWindow) {
       mainWindow.webContents.executeJavaScript(`
         var ipcRenderer = require('electron').ipcRenderer
-        var status = (!document.querySelector('.play-pause-button').title.includes('Paus')) ? 'Playing' : 'Paused'
+        var status = (document.querySelector('.play-pause-button').title.includes('Paus')) ? 'Playing' : 'Paused'
         var title = (document.querySelector('.title.ytmusic-player-bar')) ? document.querySelector('.title.ytmusic-player-bar').innerText : ''
         var artist = (document.querySelector('.byline.ytmusic-player-bar')) ? document.querySelector('.byline.ytmusic-player-bar').innerText.split('•')[0].trim() : ''
         var object = {
@@ -213,13 +176,12 @@ function skipOver () {
 
 // Application ready to run
 app.on('ready', () => {
-  trayTheme = (process.platform === 'darwin') ? 'dark' : 'light'
+  trayTheme = (isMac) ? 'dark' : 'light'
   app.setName('MusicTube Player')
 
   createLoadingWindow()
   createWindow()
   globalShortcuts()
-  createMenu()
   trayIcon()
   playStatus()
   skipOver()
@@ -238,11 +200,19 @@ app.on('before-quit', () => {
 // Status IPC receiver
 ipcMain.on('player', (event, object) => {
   if (JSON.stringify(object) !== status && object.title !== '' && object.artist !== '') {
-    tray.displayBalloon({
-      title: object.title,
-      content: object.artist.replace(/\n/g, ''),
-      icon: path.join(__dirname, 'assets', 'musictube.png')
-    })
+    if (isWindows) {
+      tray.displayBalloon({
+        title: object.title,
+        content: object.artist.replace(/\n/g, ''),
+        icon: path.join(__dirname, 'assets/musictube.png')
+      })
+    } else {
+      notifier.notify({
+        title: `${app.getName()} • ${object.status}`,
+        message: `${object.title}\n${object.artist}`,
+        icon: path.join(__dirname, 'assets/musictube.ico')
+      })
+    }
   }
   status = JSON.stringify(object)
   tray.setImage(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}-${object.status.toLowerCase()}.png`))

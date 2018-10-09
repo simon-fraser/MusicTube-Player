@@ -38,6 +38,11 @@ npm run test
 ```
 
 ## Release History
+* 1.6.1
+    * Merge Pull Request #7
+    * Re-instated node-notifier for OSX.
+    * Removed application menu in favour of tray context menu.
+    * Added electron debugger tool.
 * 1.6.0
     * New notification code that improves the notification frequency and accuracy.
     * Added Tray icon which currently toggles application visibility.
