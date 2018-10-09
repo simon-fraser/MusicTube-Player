@@ -3,7 +3,7 @@ const notifier = require('node-notifier')
 const path = require('path')
 const windowStateKeeper = require('electron-window-state')
 
-require('electron-debug')({ enabled: false })
+if (process.env.ELECTRON_ENV) require('electron-debug')({ enabled: false })
 
 // variables
 let winWidth = 440
