@@ -354,6 +354,6 @@
 
   @keyframes pulse_animation {
     0% { transform: scale(1); }
-    40% { transform: scale(1.15); }
+    40% { transform: scale(1.10); }
     100% { transform: scale(1); }
   }

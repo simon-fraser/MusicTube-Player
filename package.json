@@ -1,6 +1,6 @@
 {
   "name": "musictubeplayer",
-  "version": "1.6.1",
+  "version": "2.0.0",
   "description": "MusicTube player is an electron wrapper application for YouTube Music with added media key support and notifications.",
   "main": "index.js",
   "repository": {

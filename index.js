@@ -1,16 +1,14 @@
-const { app, BrowserWindow, globalShortcut, ipcMain, Menu, Tray } = require('electron')
+const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, Tray } = require('electron')
 const notifier = require('node-notifier')
 const path = require('path')
 const windowStateKeeper = require('electron-window-state')
 
 require('electron-debug')({ enabled: false })
 
-// variables
 let winWidth = 440
 let winHeight = 620
-let loadingScreen
+let masterWindow
 let mainWindow
-let aboutScreen
 let tray
 let trayTheme
 let status
@@ -23,63 +21,20 @@ let windowParams = {
 const isMac = process.platform === 'darwin'
 const isWindows = process.platform === 'win32'
 
-function createAboutWindow () {
-  aboutScreen = new BrowserWindow({
-    backgroundColor: '#131313',
-    frame: true,
-    icon: path.join(__dirname, 'assets/musictube.ico'),
-    title: 'About MusicTube Player',
-    height: 400,
-    width: 320
-  })
-  aboutScreen.loadURL(`file://${__dirname}/about.html`)
-}
+// function createAboutWindow () {
+//   aboutScreen = new BrowserWindow({
+//     backgroundColor: '#131313',
+//     frame: true,
+//     icon: path.join(__dirname, 'assets/musictube.ico'),
+//     title: 'About MusicTube Player',
+//     height: 400,
+//     width: 320
+//   })
+//   aboutScreen.loadURL(`file://${__dirname}/about.html`)
+// }
 
-function createLoadingWindow () {
-  loadingScreen = new BrowserWindow(Object.assign(windowParams, {
-    frame: false,
-    parent: mainWindow,
-    width: winWidth,
-    height: winWidth
-  }))
-  loadingScreen.loadURL(`file://${__dirname}/loading.html`)
-  loadingScreen.on('closed', () => { loadingScreen = null })
-  loadingScreen.webContents.on('did-finish-load', () => {
-    loadingScreen.show()
-  })
-}
-
-function createWindow () {
-  let mainWindowState = windowStateKeeper({
-    defaultWidth: winWidth,
-    defaultHeight: winHeight
-  })
-  mainWindow = new BrowserWindow(Object.assign(windowParams, {
-    frame: true,
-    height: mainWindowState.height,
-    show: false,
-    width: mainWindowState.width,
-    x: mainWindowState.x,
-    y: mainWindowState.y
-  }))
-  mainWindow.loadURL(`https://music.youtube.com/`)
-  mainWindow.hide()
-  // Show main window and hide loader
-  mainWindow.webContents.on('did-finish-load', () => {
-    mainWindowState.manage(mainWindow)
-    mainWindow.show()
-    if (loadingScreen !== null) loadingScreen.close()
-  })
-  // Close behaviour
-  mainWindow.on('close', (e) => {
-    mainWindowState.saveState(mainWindow)
-    if (!willQuitApp) {
-      e.preventDefault()
-      mainWindow.hide()
-    }
-  })
-  mainWindow.on('closed', () => { mainWindow = null })
-  mainWindow.setMenu(null)
+function aboutModal () {
+  console.log(dialog.showMessageBox(masterWindow, { title: 'About', message: 'All About the app' }))
 }
 
 function globalShortcuts () {
@@ -97,17 +52,6 @@ function globalShortcuts () {
   })
 }
 
-function trayIcon () {
-  tray = new Tray(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}.png`))
-  tray.setToolTip('MusicTube Player')
-  tray.on('click', () => {
-    if (mainWindow.isMinimized()) mainWindow.restore()
-    mainWindow.show()
-  })
-
-  trayContextMenu()
-}
-
 function trayContextMenu () {
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -118,21 +62,27 @@ function trayContextMenu () {
     },
     {
       label: 'About',
-      click: () => {
-        createAboutWindow()
-      }
+      click: () => aboutModal()
     },
     {
       label: 'Quit',
-      click: () => {
-        app.quit()
-      }
+      click: () => app.quit()
     }
   ])
   tray.setContextMenu(contextMenu)
   tray.on('right-click', () => {
     tray.popUpContextMenu(contextMenu)
   })
+}
+
+function trayIcon () {
+  tray = new Tray(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}.png`))
+  tray.setToolTip('MusicTube Player')
+  tray.on('click', () => {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.show()
+  })
+  trayContextMenu()
 }
 
 function playStatus () {
@@ -151,7 +101,7 @@ function playStatus () {
         ipcRenderer.send('player', object)
       `)
     }
-  }, 250)
+  }, 500)
 }
 
 function skipOver () {
@@ -163,7 +113,7 @@ function skipOver () {
         if (skip) { skip.click() }
       `)
     }
-  }, 250)
+  }, 500)
   // You Still There popup notice
   setInterval(() => {
     if (mainWindow) {
@@ -172,16 +122,52 @@ function skipOver () {
         if (stillThere) { stillThere.click() }
       `)
     }
-  }, 250)
+  }, 500)
 }
 
 // Application ready to run
 app.on('ready', () => {
   trayTheme = (isMac) ? 'dark' : 'light'
   app.setName('MusicTube Player')
+  let windowState = windowStateKeeper({
+    defaultWidth: winWidth,
+    defaultHeight: winHeight
+  })
 
-  createLoadingWindow()
-  createWindow()
+  // Master Window
+  masterWindow = new BrowserWindow({
+    backgroundColor: '#131313',
+    height: windowState.height,
+    width: windowState.width,
+    x: windowState.x,
+    y: windowState.y
+  })
+  masterWindow.loadURL(`file://${__dirname}/loading.html`)
+
+  // Main Youtube Window
+  mainWindow = new BrowserWindow(Object.assign(windowParams, {
+    parent: masterWindow,
+    frame: true,
+    modal: true,
+    show: false,
+    height: windowState.height,
+    width: windowState.width
+  }))
+  masterWindow.loadURL(`https://music.youtube.com/`)
+  masterWindow.once('ready-to-show', () => {
+    masterWindow.show()
+  })
+
+  masterWindow.on('close', (e) => {
+    windowState.saveState(masterWindow)
+    if (!willQuitApp) {
+      e.preventDefault()
+      masterWindow.hide()
+    }
+  })
+  // masterWindow.on('closed', () => { masterWindow = null })
+  masterWindow.setMenu(null)
+
   globalShortcuts()
   trayIcon()
   playStatus()
@@ -189,14 +175,10 @@ app.on('ready', () => {
 })
 
 // triggered when clicked the dock icon (osx)
-app.on('activate', () => {
-  mainWindow.show()
-})
+app.on('activate', () => masterWindow.show())
 
 // triggered when quitting from dock icon (osx)
-app.on('before-quit', () => {
-  willQuitApp = true
-})
+app.on('before-quit', () => { willQuitApp = true })
 
 // Status IPC receiver
 ipcMain.on('player', (event, object) => {
