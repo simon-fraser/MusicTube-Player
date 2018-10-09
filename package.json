@@ -40,7 +40,6 @@
     "electron"
   ],
   "dependencies": {
-    "electron-window-state": "^5.0.1",
-    "node-notifier": "^5.2.*"
+    "electron-window-state": "^5.0.1"
   }
 }
