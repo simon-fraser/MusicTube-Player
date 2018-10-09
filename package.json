@@ -11,7 +11,6 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^3.0.2",
-    "electron-debug": "^2.0.0",
     "electron-installer-dmg": "^2.0.0",
     "electron-installer-windows": "^1.1.0",
     "electron-packager": "^12.1.2",
@@ -26,7 +25,7 @@
     "standard": "^12.0.1"
   },
   "scripts": {
-    "start": "ELECTRON_ENV=development electron .",
+    "start": "electron .",
     "lint": "standard",
     "test": "standard && mocha",
     "osx": "electron-packager . 'MusicTube Player' --platform=darwin --arch=x64 --out=build/osx --overwrite=true --prune=true --icon=assets/musictube.icns && electron-installer-dmg \"build/osx/MusicTube Player-darwin-x64/MusicTube Player.app\" \"MusicTubePlayer\" --out=build/osx --overwrite --icon=assets/musictube.icns",
@@ -41,6 +40,7 @@
     "electron"
   ],
   "dependencies": {
+    "electron-debug": "^2.0.0",
     "electron-window-state": "^5.0.1",
     "node-notifier": "^5.2.1"
   }
