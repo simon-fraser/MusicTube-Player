@@ -7,48 +7,43 @@ require('electron-debug')({ enabled: false })
 
 let winWidth = 440
 let winHeight = 620
-let masterWindow
-let mainWindow
+let windowState
+let main
+let loading
 let tray
 let trayTheme
 let status
-let willQuitApp = false
-let windowParams = {
-  backgroundColor: '#131313',
-  icon: path.join(__dirname, 'assets/musictube.ico'),
-  title: 'Loading...'
-}
+let willQuit = false
 const isMac = process.platform === 'darwin'
 const isWindows = process.platform === 'win32'
 
-// function createAboutWindow () {
-//   aboutScreen = new BrowserWindow({
-//     backgroundColor: '#131313',
-//     frame: true,
-//     icon: path.join(__dirname, 'assets/musictube.ico'),
-//     title: 'About MusicTube Player',
-//     height: 400,
-//     width: 320
-//   })
-//   aboutScreen.loadURL(`file://${__dirname}/about.html`)
-// }
-
 function aboutModal () {
-  console.log(dialog.showMessageBox(masterWindow, { title: 'About', message: 'All About the app' }))
+  let about = new BrowserWindow({
+    alwaysOnTop: true,
+    backgroundColor: '#131313',
+    frame: false,
+    parent: main,
+    show: true,
+    width: 300,
+    height: 400,
+    x: (windowState.x + 50),
+    y: (windowState.y + 70)
+  })
+  about.loadURL(`file://${__dirname}/about.html`)
 }
 
 function globalShortcuts () {
   // Play,Pause
   globalShortcut.register('MediaPlayPause', () => {
-    mainWindow.webContents.executeJavaScript(`document.querySelector('.play-pause-button').click()`)
+    main.webContents.executeJavaScript(`document.querySelector('.play-pause-button').click()`)
   })
   // Next
   globalShortcut.register('MediaNextTrack', () => {
-    mainWindow.webContents.executeJavaScript(`document.querySelector('.next-button').click()`)
+    main.webContents.executeJavaScript(`document.querySelector('.next-button').click()`)
   })
   // Previous
   globalShortcut.register('MediaPreviousTrack', () => {
-    mainWindow.webContents.executeJavaScript(`document.querySelector('.previous-button').click()`)
+    main.webContents.executeJavaScript(`document.querySelector('.previous-button').click()`)
   })
 }
 
@@ -79,16 +74,16 @@ function trayIcon () {
   tray = new Tray(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}.png`))
   tray.setToolTip('MusicTube Player')
   tray.on('click', () => {
-    if (mainWindow.isMinimized()) mainWindow.restore()
-    mainWindow.show()
+    if (main.isMinimized()) main.restore()
+    main.show()
   })
   trayContextMenu()
 }
 
 function playStatus () {
   setInterval(() => {
-    if (mainWindow) {
-      mainWindow.webContents.executeJavaScript(`
+    if (main) {
+      main.webContents.executeJavaScript(`
         var ipcRenderer = require('electron').ipcRenderer
         var status = (document.querySelector('.play-pause-button').title.includes('Paus')) ? 'Playing' : 'Paused'
         var title = (document.querySelector('.title.ytmusic-player-bar')) ? document.querySelector('.title.ytmusic-player-bar').innerText : ''
@@ -107,8 +102,8 @@ function playStatus () {
 function skipOver () {
   // YouTube Adverts - Will auto click skip button
   setInterval(() => {
-    if (mainWindow) {
-      mainWindow.webContents.executeJavaScript(`
+    if (main) {
+      main.webContents.executeJavaScript(`
         var skip = document.querySelector('.videoAdUiSkipButton')
         if (skip) { skip.click() }
       `)
@@ -116,8 +111,8 @@ function skipOver () {
   }, 500)
   // You Still There popup notice
   setInterval(() => {
-    if (mainWindow) {
-      mainWindow.webContents.executeJavaScript(`
+    if (main) {
+      main.webContents.executeJavaScript(`
         var stillThere = document.querySelector('.ytmusic-you-there-renderer .yt-button-renderer')
         if (stillThere) { stillThere.click() }
       `)
@@ -129,44 +124,43 @@ function skipOver () {
 app.on('ready', () => {
   trayTheme = (isMac) ? 'dark' : 'light'
   app.setName('MusicTube Player')
-  let windowState = windowStateKeeper({
-    defaultWidth: winWidth,
-    defaultHeight: winHeight
-  })
-
-  // Master Window
-  masterWindow = new BrowserWindow({
+  windowState = windowStateKeeper({ defaultWidth: winWidth, defaultHeight: winHeight })
+  let sharedWindowParams = {
     backgroundColor: '#131313',
+    icon: path.join(__dirname, 'assets/musictube.ico'),
+    title: 'Loading...',
     height: windowState.height,
     width: windowState.width,
     x: windowState.x,
     y: windowState.y
-  })
-  masterWindow.loadURL(`file://${__dirname}/loading.html`)
+  }
 
-  // Main Youtube Window
-  mainWindow = new BrowserWindow(Object.assign(windowParams, {
-    parent: masterWindow,
-    frame: true,
-    modal: true,
-    show: false,
+  main = new BrowserWindow(Object.assign(sharedWindowParams, { show: false }))
+  main.loadURL(`https://music.youtube.com/`)
+
+  loading = new BrowserWindow(Object.assign(sharedWindowParams, {
+    frame: false,
+    parent: main,
     height: windowState.height,
     width: windowState.width
   }))
-  masterWindow.loadURL(`https://music.youtube.com/`)
-  masterWindow.once('ready-to-show', () => {
-    masterWindow.show()
+  loading.loadURL(`file://${__dirname}/loading.html`)
+  loading.on('closed', () => { loading = null })
+  loading.webContents.on('did-finish-load', () => {
+    loading.show()
   })
 
-  masterWindow.on('close', (e) => {
-    windowState.saveState(masterWindow)
-    if (!willQuitApp) {
+  main.once('ready-to-show', () => {
+    main.show()
+    loading.hide()
+  })
+  main.on('close', (e) => {
+    if (!willQuit) {
       e.preventDefault()
-      masterWindow.hide()
+      main.hide()
     }
   })
-  // masterWindow.on('closed', () => { masterWindow = null })
-  masterWindow.setMenu(null)
+  main.setMenu(null)
 
   globalShortcuts()
   trayIcon()
@@ -175,10 +169,10 @@ app.on('ready', () => {
 })
 
 // triggered when clicked the dock icon (osx)
-app.on('activate', () => masterWindow.show())
+app.on('activate', () => { main.show() })
 
 // triggered when quitting from dock icon (osx)
-app.on('before-quit', () => { willQuitApp = true })
+app.on('before-quit', () => { willQuit = true })
 
 // Status IPC receiver
 ipcMain.on('player', (event, object) => {

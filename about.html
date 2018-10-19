@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="index.css">
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <link rel='stylesheet' href='index.css'>
   <style>
     body {
       color: #fff;
@@ -27,24 +27,32 @@
     const { app } = remote;
     document.addEventListener('DOMContentLoaded', function () {
       document.querySelector('.js-version').textContent = `${app.getVersion()}`
-      let aTags = document.getElementsByTagName("a")
+
+      document.querySelector('.close-btn').addEventListener('click', function (e) {
+        var window = remote.getCurrentWindow()
+        window.close()
+      })
+
+      // Open External URLS's
+      let aTags = document.getElementsByTagName('a')
       for (var i = 0; i < aTags.length; i++) {
-        aTags[i].setAttribute("onclick","shell.openExternal('" + aTags[i].href + "')")
-        aTags[i].href = "#"
+        aTags[i].setAttribute('onclick',`shell.openExternal('${aTags[i].href}')`)
+        aTags[i].href = '#'
       }
     })
   </script>
 </head>
-<body>
-  <div class="about-head">
-    <img src="assets/musictube.svg" width="100" alt="MusicTube Player">
+<body style='-webkit-app-region: drag'>
+  <button class='close-btn'></button>
+  <div class='about-head'>
+    <img src='assets/musictube.svg' width='100' alt='MusicTube Player'>
     <h2>MusicTube Player</h2>
   </div>
-  <div class="about-content">
-    <p><u class="js-version">vx.x.x</u></p>
+  <div class='about-content'>
+    <p><u class='js-version'>vx.x.x</u></p>
     <p>By Simon Fraser <br><br>
-      (<a href="https://simonf.co.uk">https://simonf.co.uk</a>)<br>
-      (<a href="https://github.com/simon-fraser/MusicTube-Player">https://github.com/simon-fraser/MusicTube-Player</a>)
+      (<a href='https://simonf.co.uk'>https://simonf.co.uk</a>)<br>
+      (<a href='https://github.com/simon-fraser/MusicTube-Player'>https://github.com/simon-fraser/MusicTube-Player</a>)
     </p>
     <p>YouTube, YouTube Music and all logos are trademarks of YouTube, LLC.</p>
   </div>
