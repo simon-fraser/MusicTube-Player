@@ -1,4 +1,5 @@
-const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, Tray } = require('electron')
+const { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, shell, Tray } = require('electron')
+const axios = require('axios')
 const notifier = require('node-notifier')
 const path = require('path')
 const windowStateKeeper = require('electron-window-state')
@@ -8,6 +9,7 @@ require('electron-debug')({ enabled: false })
 let winWidth = 440
 let winHeight = 620
 let windowState
+let about
 let main
 let loading
 let tray
@@ -18,7 +20,8 @@ const isMac = process.platform === 'darwin'
 const isWindows = process.platform === 'win32'
 
 function aboutModal () {
-  let about = new BrowserWindow({
+  // About window
+  about = new BrowserWindow({
     alwaysOnTop: true,
     backgroundColor: '#131313',
     frame: false,
@@ -47,6 +50,7 @@ function globalShortcuts () {
   })
 }
 
+// Tray/System bar icon click menu
 function trayContextMenu () {
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -70,6 +74,7 @@ function trayContextMenu () {
   })
 }
 
+// Tray/system bar icon
 function trayIcon () {
   tray = new Tray(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}.png`))
   tray.setToolTip('MusicTube Player')
@@ -80,6 +85,7 @@ function trayIcon () {
   trayContextMenu()
 }
 
+// Get the player status
 function playStatus () {
   setInterval(() => {
     if (main) {
@@ -120,6 +126,32 @@ function skipOver () {
   }, 500)
 }
 
+function checkVersion () {
+  let localTag = app.getVersion()
+  let remoteTag = 0
+  // Fetch
+  axios.get('https://api.github.com/repos/simon-fraser/MusicTube-Player/releases/latest')
+    .then(response => {
+      if (response.status === 200) {
+        try {
+          remoteTag = response.data.tag_name
+        } catch (error) { console.log('Update: return error', error) }
+      }
+    }).catch(error => console.log('Update: fetch error', error))
+    .then(() => {
+      if (localTag !== remoteTag) {
+        dialog.showMessageBox(main, {
+          title: 'Update Available',
+          message: 'An update is available, Do you want to download it now?.',
+          buttons: ['Cancel', 'Download'],
+          defaultId: 1
+        }, (buttonIndex) => {
+          if (buttonIndex === 1) shell.openExternal('https://github.com/simon-fraser/MusicTube-Player/releases')
+        })
+      }
+    })
+}
+
 // Application ready to run
 app.on('ready', () => {
   trayTheme = (isMac) ? 'dark' : 'light'
@@ -134,10 +166,11 @@ app.on('ready', () => {
     x: windowState.x,
     y: windowState.y
   }
-
+  // Main YouTube window
   main = new BrowserWindow(Object.assign(sharedWindowParams, { show: false }))
   main.loadURL(`https://music.youtube.com/`)
 
+  // Loading window
   loading = new BrowserWindow(Object.assign(sharedWindowParams, {
     frame: false,
     parent: main,
@@ -150,9 +183,14 @@ app.on('ready', () => {
     loading.show()
   })
 
+  // Ready to show YouTube
   main.once('ready-to-show', () => {
     main.show()
     loading.hide()
+
+    playStatus()
+    skipOver()
+    checkVersion()
   })
   main.on('close', (e) => {
     if (!willQuit) {
@@ -161,11 +199,8 @@ app.on('ready', () => {
     }
   })
   main.setMenu(null)
-
   globalShortcuts()
   trayIcon()
-  playStatus()
-  skipOver()
 })
 
 // triggered when clicked the dock icon (osx)

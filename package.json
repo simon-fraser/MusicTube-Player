@@ -40,6 +40,7 @@
     "electron"
   ],
   "dependencies": {
+    "axios": "^0.18.0",
     "electron-debug": "^2.0.0",
     "electron-window-state": "^5.0.1",
     "node-notifier": "^5.2.1"

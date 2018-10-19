@@ -33,7 +33,7 @@
         window.close()
       })
 
-      // Open External URLS's
+      // Open External URLS
       let aTags = document.getElementsByTagName('a')
       for (var i = 0; i < aTags.length; i++) {
         aTags[i].setAttribute('onclick',`shell.openExternal('${aTags[i].href}')`)
