@@ -37,42 +37,6 @@ Tests:
 npm run test
 ```
 
-## Release History
-* 1.6.1
-    * Merge Pull Request #7
-    * Re-instated node-notifier for OSX.
-    * Removed application menu in favour of tray context menu.
-    * Added electron debugger tool.
-* 1.6.0
-    * New notification code that improves the notification frequency and accuracy.
-    * Added Tray icon which currently toggles application visibility.
-* 1.5.0
-    * Pull Request #4 Windows build script works now.
-    * Introducing skip logic for the YouTube `You Still There` popup notice which pauses playback
-* 1.4.3
-    * Pull Request #2 introducing [electron-window-state](https://npmjs.com/package/electron-window-state).
-    * Redesigned loading screen.
-* 1.4.2
-    * Dependency updates.
-* 1.4.1
-    * FIX: Update to close behaviour to stop error notice.
-* 1.4.0
-    * Renamed to MusicTube with a new Icon Designed by rocketpixel / Freepik.
-* 1.3.0
-    * Method to auto skip over ads.
-* 1.2.2
-    * Code refactor.
-    * Shelving update tool.
-* 1.2.1
-    * Testing new update tool.
-* 1.2.0
-    * Added a loading screen for loss of or slow internet connection.
-    * Added an about panel.
-* 1.1.0
-    * First public release, application working on OSX (10.13.6).
-* 1.0.0
-    * Alpha/internal testing.
-
 ## Meta
 
 Simon Fraser – [@symatree](https://twitter.com/symatree)
