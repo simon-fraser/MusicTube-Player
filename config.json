@@ -1,0 +1,14 @@
+{
+    "userDataDir": "MusicTubePlayer",
+    "name": "MusicTubePlayer",
+    "productName": "MusicTubePlayer",
+    "dest": "build/linux/",
+    "icon": "assets/musictube.ico",
+    "categories": [
+        "Audio"
+    ],
+    "lintianOverrides": [
+        "changelog-file-missing-in-native-package"
+    ],
+    "bin": "MusicTubePlayer"
+  }

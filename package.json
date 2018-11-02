@@ -11,6 +11,7 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^3.0.2",
+    "electron-installer-debian": "^1.0.0",
     "electron-installer-dmg": "^2.0.0",
     "electron-installer-windows": "^1.1.0",
     "electron-packager": "^12.1.2",
@@ -29,7 +30,8 @@
     "lint": "standard",
     "test": "standard && mocha",
     "osx": "electron-packager . 'MusicTube Player' --platform=darwin --arch=x64 --out=build/osx --overwrite=true --prune=true --icon=assets/musictube.icns && electron-installer-dmg \"build/osx/MusicTube Player-darwin-x64/MusicTube Player.app\" \"MusicTubePlayer\" --out=build/osx --overwrite --icon=assets/musictube.icns",
-    "win": "electron-packager . \"MusicTubePlayer\" --platform=win32 --arch=x64 --out=build/win --overwrite --prune=true --icon=\"assets/musictube.ico\" --version-string.ProductName='MusicTube Player' --app-version=%npm_package_version% --asar && electron-installer-windows --src build/win/MusicTubePlayer-win32-x64/ --dest build/win/"
+    "win": "electron-packager . \"MusicTubePlayer\" --platform=win32 --arch=x64 --out=build/win --overwrite --prune=true --icon=\"assets/musictube.ico\" --version-string.ProductName='MusicTube Player' --app-version=%npm_package_version% --asar && electron-installer-windows --src build/win/MusicTubePlayer-win32-x64/ --dest build/win/",
+    "linux": "electron-packager . \"MusicTubePlayer\" --platform=linux --arch=x64 --out=build/linux --overwrite --prune=true --icon=\"assets/musictube.ico\" --version-string.ProductName='MusicTube Player' --app-version=%npm_package_version% --asar && electron-installer-debian --src build/linux/MusicTubePlayer-linux-x64/ --arch amd64 --config config.json"
   },
   "keywords": [
     "youtube",
