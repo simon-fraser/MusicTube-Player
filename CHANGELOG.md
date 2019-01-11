@@ -23,6 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 - /
+## [1.7.0] - 2018-01-11
+### Added
+- New Tray icons
+### Changed
+- Removed the splash screen
+- Removed the about screen
+### Removed
+- Old individual tray icons for playing & paused
 
 ## [1.6.1] - 2018-09-09
 ### Added
