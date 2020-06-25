@@ -159,7 +159,11 @@ app.on('activate', () => {
 
 // triggered when quitting from dock icon (osx)
 app.on('before-quit', () => {
-    willQuitApp = true
+  willQuitApp = true
+})
+
+app.on('window-all-closed', () => {
+  app.quit()
 })
 
 // Status IPC receiver
