@@ -10,18 +10,18 @@
   "author": "Simon Fraser",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^4.0.1",
-    "electron-installer-debian": "^1.1.0",
+    "electron": "^4.2.12",
+    "electron-installer-debian": "^3.0.0",
     "electron-installer-dmg": "^2.0.0",
-    "electron-installer-windows": "^1.1.0",
-    "electron-packager": "^13.0.1",
-    "eslint": "^5.12.0",
+    "electron-installer-windows": "^3.0.0",
+    "electron-packager": "^13.1.1",
+    "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "mocha": "^5.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "mocha": "^8.0.1",
     "spectron": "^5.0.0",
     "standard": "^12.0.1"
   },
@@ -42,8 +42,9 @@
     "electron"
   ],
   "dependencies": {
-    "electron-debug": "^2.0.0",
+    "electron-debug": "^2.2.0",
     "electron-window-state": "^5.0.3",
-    "node-notifier": "^5.3.0"
+    "node-notifier": "^5.4.3",
+    "npm": "^6.14.5"
   }
 }
