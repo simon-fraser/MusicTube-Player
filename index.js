@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut, ipcMain, systemPreferences, Tray } = require('electron')
+const { app, BrowserWindow, globalShortcut, ipcMain, systemPreferences, Tray, Menu } = require('electron')
 const notifier = require('node-notifier')
 const path = require('path')
 const windowStateKeeper = require('electron-window-state')
@@ -47,27 +47,51 @@ function createWindow () {
 
 function globalShortcuts () {
   // Play,Pause
-  globalShortcut.register('MediaPlayPause', () => {
-    console.log('play/pause')
-    mainWindow.webContents.executeJavaScript(`document.querySelector('.play-pause-button').click()`)
-  })
+  globalShortcut.register('MediaPlayPause', mediaPlayPause)
   // Next
-  globalShortcut.register('MediaNextTrack', () => {
-    mainWindow.webContents.executeJavaScript(`document.querySelector('.next-button').click()`)
-  })
+  globalShortcut.register('MediaNextTrack', mediaNextTrack)
   // Previous
-  globalShortcut.register('MediaPreviousTrack', () => {
-    mainWindow.webContents.executeJavaScript(`document.querySelector('.previous-button').click()`)
-  })
+  globalShortcut.register('MediaPreviousTrack', mediaPreviousTrack)
+}
+
+function mediaPlayPause () {
+  console.info('play/pause')
+  mainWindow.webContents.executeJavaScript(`document.querySelector('.play-pause-button').click()`)
+}
+
+function mediaNextTrack () {
+  console.info('play next track')
+  mainWindow.webContents.executeJavaScript(`document.querySelector('.next-button').click()`)
+}
+
+function mediaPreviousTrack () {
+  console.info('play previous track')
+  mainWindow.webContents.executeJavaScript(`document.querySelector('.previous-button').click()`)
+}
+
+function toggleQuitApp (menuItem) {
+  willQuitApp = !willQuitApp
+  menuItem.checked = willQuitApp
 }
 
 function trayIcon () {
   tray = new Tray(path.join(__dirname, `assets/icons/menu-standard-${trayTheme}.png`))
   tray.setToolTip('MusicTube Player')
-  tray.on('click', () => {
-    if (mainWindow.isMinimized()) mainWindow.restore()
-    mainWindow.show()
-  })
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Open App',
+      type: 'normal',
+      click: () => {
+        if (mainWindow.isMinimized()) mainWindow.restore()
+        mainWindow.show()
+      }
+    },
+    { label: 'Play/Pause', type: 'normal', click: mediaPlayPause },
+    { label: 'Next', type: 'normal', click: mediaNextTrack },
+    { label: 'Previous', type: 'normal', click: mediaPreviousTrack },
+    { label: 'Quit App', type: 'checkbox', click: toggleQuitApp, checked: willQuitApp }
+  ])
+  tray.setContextMenu(contextMenu)
 }
 
 function playStatus () {
@@ -135,7 +159,7 @@ app.on('activate', () => {
 
 // triggered when quitting from dock icon (osx)
 app.on('before-quit', () => {
-  willQuitApp = true
+    willQuitApp = true
 })
 
 // Status IPC receiver
