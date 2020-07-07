@@ -94,7 +94,7 @@ function skipOver () {
   setInterval(() => {
     if (mainWindow) {
       mainWindow.webContents.executeJavaScript(`
-        var skip = document.querySelector('.videoAdUiSkipButton')
+        var skip = document.querySelector('.ytp-ad-skip-button')
         if (skip) { skip.click() }
       `)
     }
